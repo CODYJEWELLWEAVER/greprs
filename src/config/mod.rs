@@ -1,4 +1,4 @@
-use super::*;
+use super::consts;
 use std::env;
 
 pub struct Config {

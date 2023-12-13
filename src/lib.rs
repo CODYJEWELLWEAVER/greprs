@@ -2,13 +2,16 @@ use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
 
+// Import greprs modules.
 use config::Config;
 
-
-mod consts;
-
+// Define modules to expose.
 pub mod config;
-
+mod consts;
+mod search;
+////////////////////////
+// Unit Tests for greprs
+////////////////////////
 #[cfg(test)]
 mod test {
     use super::*;
@@ -23,7 +26,7 @@ Pick three.";
 
         assert_eq!(
             vec!["safe, fast, productive."],
-            search(query, contents)
+            search::case_sensitive(query, contents)
         );
     }
 
@@ -38,7 +41,7 @@ Duct tape.";
 
         assert_eq!(
             vec!["safe, fast, productive."],
-            search(query, contents)
+            search::case_sensitive(query, contents)
         );
     }
 
@@ -53,45 +56,9 @@ Trust me.";
 
         assert_eq!(
             vec!["Rust:", "Trust me."],
-            search_case_insensitive(query, contents),
+            search::case_insensitive(query, contents),
         )
     }
-}
-
-// Case sensitive search function.
-// Params: query: Config.query - user config,
-//         contents: Config.contents - file to search.
-// List of matching lines.
-fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.contains(query) {
-            results.push(line);
-        }
-    }
-
-    results
-}
-
-// Case insensitvie search function
-// Params: query: Config.query - user config,
-//         contents: Config.contents - file to search.
-// List of matching lines.
-fn search_case_insensitive<'a>(
-    query: &str, 
-    contents: &'a str,
-) -> Vec<&'a str> {
-    let query = query.to_lowercase();
-    let mut results = Vec::new();
-
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
 }
 
 // Run greprs
@@ -107,9 +74,9 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     // Get search results.
     let results = if config.case_sensitive {
-        search(&config.query, &contents)
+        search::case_sensitive(&config.query, &contents)
     } else {
-        search_case_insensitive(&config.query, &contents)
+        search::case_insensitive(&config.query, &contents)
     };
 
     // Display search results.
