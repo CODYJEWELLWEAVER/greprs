@@ -4,7 +4,7 @@ use std::env;
 use std::process;
 use std::io::prelude::*;
 
-use greprs::Config;
+use greprs::config::Config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
