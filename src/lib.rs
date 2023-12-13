@@ -7,11 +7,14 @@ use config::Config;
 
 // Define modules to expose.
 pub mod config;
+
+// Internal modules.
 mod consts;
 mod search;
-////////////////////////
-// Unit Tests for greprs
-////////////////////////
+
+//////////////
+// TEST Module
+//////////////
 #[cfg(test)]
 mod test {
     use super::*;

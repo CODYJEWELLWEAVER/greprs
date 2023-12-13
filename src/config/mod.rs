@@ -1,6 +1,8 @@
 use super::consts;
 use std::env;
 
+mod option;
+
 pub struct Config {
     pub query: String,
     pub filename: String,
@@ -20,8 +22,8 @@ impl Config {
             );
         }
 
-        let query: &str = &args[1].clone();
-        let filename: &str = &args[2].clone();
+        let query: &str = &args[1];
+        let filename: &str = &args[2];
 
         // Check if search is case sensitive
         let case_sensitive: bool = parse_case_sensitive(args);
@@ -41,7 +43,7 @@ impl Config {
  * if search is case sensitive. CL arguments take priority over 
  * enviroment variables.
  */
-fn parse_case_sensitive(args: &[String]) -> bool {
+fn parse_case_sensitive(option_args: &[String]) -> bool {
     // Check env var.
     let var_result = match env::var_os(consts::CASE_INSENSITIVE_VAR) {
         Some(s) => s == "0",
@@ -49,12 +51,12 @@ fn parse_case_sensitive(args: &[String]) -> bool {
     };
 
     // Check for command line argument.
-    let arg_result = if args.len() < 4 {
+    let arg_result = if option_args.len() < 4 {
         // Default to eviroment var if 
         // no arg passed in.
         var_result
     } else {
-        let case_insensitive: &str = &args[3].clone();
+        let case_insensitive: &str = &option_args[3].clone();
         if case_insensitive == "0" {
             // Overrides env var if false passed in as cli arg
             return true;
@@ -70,4 +72,37 @@ fn parse_case_sensitive(args: &[String]) -> bool {
     };
 
     var_result || arg_result
+}
+
+////////////////////////////
+// test module for config
+////////////////////////////
+#[cfg(test)]
+pub mod test {
+    use super::*;
+
+    // Tests input arguments for -i, -y, and --ignore-case
+    #[test]
+    pub fn parse_config_arg() {
+        let test_args = ["-i".to_string()];
+        assert_eq!(
+            true,
+            parse_case_sensitive(&test_args)
+        );
+        let test_args = ["-y".to_string()];
+        assert_eq!(
+            true,
+            parse_case_sensitive(&test_args)
+        );
+        let test_args = ["--ignore-case".to_string()];
+        assert_eq!(
+            true,
+            parse_case_sensitive(&test_args)
+        );
+        let test_args = ["--no-ignore-case".to_string()];
+        assert_eq!(
+            false,
+            parse_case_sensitive(&test_args)
+        );
+    }
 }
