@@ -5,6 +5,7 @@ use std::process;
 use std::io::prelude::*;
 
 use greprs::config::Config;
+use greprs::print_search_config;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -21,8 +22,7 @@ fn main() {
                 process::exit(1);
             });
 
-    println!("Searching for '{}':", config.query);
-    println!("In file {}:", config.filename);
+    print_search_config(&config.search_config);
 
     if let Err(e) = greprs::run(config) {
         writeln!(

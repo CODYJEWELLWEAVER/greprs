@@ -1,15 +1,22 @@
-use super::consts;
-use std::env;
+pub mod search;
 
-mod option;
+use search::SearchConfig;
 
-pub struct Config {
-    pub query: String,
-    pub filename: String,
-    pub case_sensitive: bool,
+pub struct Config<'a> {
+    pub search_config:  SearchConfig<'a>,
 }
 
-impl Config {
+pub struct SearchArgs<'a> {
+    pub query: &'a str,
+    pub content: &'a str,
+}
+
+pub struct OptionArgs<'a> {
+    pub options: Vec<&'a String>,
+    pub option_values: Vec<&'a String>
+}
+
+impl Config<'_> {
     // Constructor for command line args.
     // Parses cl args and queries enviroment variables.
     // Param: cl args: &[Strings]
@@ -22,87 +29,65 @@ impl Config {
             );
         }
 
-        let query: &str = &args[1];
-        let filename: &str = &args[2];
+        let search_args = Self::parse_search_args(&args)?;
+        let option_args = Self::parse_option_args(&args)?;
 
         // Check if search is case sensitive
-        let case_sensitive: bool = parse_case_sensitive(args);
+        let search_config: SearchConfig = SearchConfig::new(search_args, option_args);
 
         Ok( 
             Config { 
-                query: query.to_string(), 
-                filename: filename.to_string(),
-                case_sensitive,
+                search_config,
             }
         )   
     }
-}
 
-/**
- * Checks both enviroment variables and cl arguments to determine 
- * if search is case sensitive. CL arguments take priority over 
- * enviroment variables.
- */
-fn parse_case_sensitive(option_args: &[String]) -> bool {
-    // Check env var.
-    let var_result = match env::var_os(consts::CASE_INSENSITIVE_VAR) {
-        Some(s) => s == "0",
-        None => false,
-    };
+    // Parses input args and maps option markups with
+    // their respective values. Option args are then passed into
+    // SearchConfig, OutputConfig, etc..
+    fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static str> {
+        let mut options = Vec::new();
+        let mut option_values = Vec::new();
+        for i in 0..args.len() {
+            // Parse options that take some sort of input for configuration.
+            if args[i].starts_with("--") && i != args.len() - 1 {
+                options.push(&args[i]);
+                option_values.push(&args[i+1]);
+            }
+            else {
+                let err_msg = String::from(&args[i]);
+                return Err("No value passed in for option: {err_msg}")
+            }
+            // Parse options that need no additional input for configuration.
+            if args[i].starts_with("-") {
+                options.push(&args[i]);
+            }
+        }
 
-    // Check for command line argument.
-    let arg_result = if option_args.len() < 4 {
-        // Default to eviroment var if 
-        // no arg passed in.
-        var_result
-    } else {
-        let case_insensitive: &str = &option_args[3].clone();
-        if case_insensitive == "0" {
-            // Overrides env var if false passed in as cli arg
-            return true;
-        } else if case_insensitive == "1" {
-            // Override env var if true passed in as cli arg
-            return false
+        Ok(OptionArgs{ options, option_values })
+    }
+
+    // Parses input args for query and content arguments.
+    fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
+        if args[2] != "in".to_string() {
+            let query: &str = &args[1];
+            let content: &str = &args[3]; 
+
+            if query.is_empty() || content.is_empty() {
+                return Err(
+                    "Error parsing query and content args. Run greprs help for detailed information."
+                )
+            }
+            else {
+                return Ok(SearchArgs{query, content})
+            }
         }
         else {
-            // If non-sense arg is passed will ignore the value
-            // and will default to case insensitive
-            false
+            // Define query arguments using <query> in <content> syntax.
+            // Default for content is a filename.
+            let query: &str = &args[1];
+            let content: &str = &args[3];
+            Ok(SearchArgs{query, content})
         }
-    };
-
-    var_result || arg_result
-}
-
-////////////////////////////
-// test module for config
-////////////////////////////
-#[cfg(test)]
-pub mod test {
-    use super::*;
-
-    // Tests input arguments for -i, -y, and --ignore-case
-    #[test]
-    pub fn parse_config_arg() {
-        let test_args = ["-i".to_string()];
-        assert_eq!(
-            true,
-            parse_case_sensitive(&test_args)
-        );
-        let test_args = ["-y".to_string()];
-        assert_eq!(
-            true,
-            parse_case_sensitive(&test_args)
-        );
-        let test_args = ["--ignore-case".to_string()];
-        assert_eq!(
-            true,
-            parse_case_sensitive(&test_args)
-        );
-        let test_args = ["--no-ignore-case".to_string()];
-        assert_eq!(
-            false,
-            parse_case_sensitive(&test_args)
-        );
     }
 }
