@@ -1,5 +1,7 @@
 use crate::config::search::SearchConfig;
 
+mod test;
+
 // Case sensitive search function.
 // Params: query: Config.query - user config,
 //         contents: Config.contents - file to search.
@@ -36,11 +38,13 @@ fn case_insensitive<'a>(
     results
 }
 
-pub fn run<'a>(config: SearchConfig<'a>) -> Vec<&'a str>{
-    if config.case_sensitive {
-        return case_sensitive(config.query, config.content)
+// Runs the search given the config parameter. 
+// Returns output list.
+pub fn run<'a>(config: &SearchConfig<'a>) -> Vec<&'a str>{
+    return if config.case_sensitive {
+        case_sensitive(config.query, config.content)
     }
     else {
-        return case_insensitive(config.query, config.content)
+        case_insensitive(config.query, config.content)
     }
 }

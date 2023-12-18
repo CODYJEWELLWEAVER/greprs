@@ -4,41 +4,72 @@ use std::io::prelude::*;
 
 // Define modules to expose.
 pub mod config;
-use config::Config;
+use config::{Config, InfoConfig};
 use config::search::SearchConfig;
 
 // Internal modules.
 mod consts;
 mod search;
+mod info;
 
 //////////////
 // TEST Module
 //////////////
 #[cfg(test)]
 mod test {
-    use super::*;
 }
 
 // Run greprs
 // Param: config : Config - user specified configuration.
 // Return: () On success - Error implementing class on failure.
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
-    let search_config = config.search_config;
+    let info_config: Option<InfoConfig> = config.info_config;
+
+    // If a configuration for an "info"
+    // run exists run it and exit.
+    match info_config {
+        Some(cfg) => {
+            let info_results = info::run(cfg);
+            print_output(info_results);
+            return Ok(())
+        },
+        None => {}
+    }
+    // Otherwise default to running a search configuration
+    let search_config: SearchConfig = match config.search_config {
+        Some(cfg) => cfg,
+        // Return Error if no config found.
+        None => return Err(Box::from("No search configuration! Exiting..."))
+    };
+    
     // Opens file.
-    let mut f = File::open(search_config.content)?;
+    let mut file = File::open(search_config.content)?;
 
     // Reads file.
-    let mut contents = String::new();
-    f.read_to_string(&mut contents)?;
+    let mut file_contents = String::new();
+    file.read_to_string(&mut file_contents)?;
 
-    let search_results = search::run(search_config);
+    // Update search config with content from source
+    let search_config = SearchConfig {
+        query: search_config.query,
+        content: &file_contents,
+        case_sensitive: search_config.case_sensitive
+    };
+
+    let search_results = search::run(&search_config);
+
+    print_search_config(&search_config);
 
     // Display search results.
-    for line in search_results {
-        println!("{}", line);
-    }
+    print_output(search_results);
 
     Ok(())
+}
+
+pub fn print_output(run_results: Vec<& str>) {
+    for line in run_results {
+        println!("{}", line);
+    }
 }
 
 /* Print Search Configuration Details */
