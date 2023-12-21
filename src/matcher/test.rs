@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod matcher_tests{
-    use crate::config::search::SearchConfig;
+    use crate::config::search_config::SearchConfig;
     use crate::matcher::MatchPattern;
     use crate::matcher::matches;
 

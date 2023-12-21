@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod search_tests {
-    use crate::config::search::SearchConfig;
+    use crate::config::search_config::SearchConfig;
     use crate::output::{OutputType, Output};
     use crate::search::run;
 
@@ -16,7 +16,7 @@ mod search_tests {
         let output = Output::new(
             Some(&search_config),
             vec!("Hello a"),
-            OutputType::SEARCH
+            OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
     }
@@ -33,7 +33,7 @@ mod search_tests {
         let output = Output::new(
             Some(&search_config),
             vec!("a Hello", "A New World"),
-            OutputType::SEARCH
+            OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
     }
@@ -50,7 +50,7 @@ mod search_tests {
         let output = Output::new(
             Some(&search_config),
             vec!("a Hello", "A New World"),
-            OutputType::SEARCH
+            OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
 
@@ -64,7 +64,7 @@ mod search_tests {
         let output = Output::new(
             Some(&search_config),
             vec!("A New World"),
-            OutputType::SEARCH
+            OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
 
@@ -78,7 +78,7 @@ mod search_tests {
         let output = Output::new(
             Some(&search_config),
             vec!("Not one!"),
-            OutputType::SEARCH
+            OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
     }

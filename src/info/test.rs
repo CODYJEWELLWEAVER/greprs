@@ -9,9 +9,9 @@ pub mod info_tests {
     fn info_run_version() {
         let version_output = match consts::VERSION {
             Some(version_string) => {
-                Output::new(None, vec!(version_string), OutputType::INFO)
+                Output::new(None, vec!(version_string), OutputType::Info)
             },
-            None => {Output::new(None, vec!(consts::UNKNOWN_VERSION), OutputType::INFO)}
+            None => {Output::new(None, vec!(consts::UNKNOWN_VERSION), OutputType::Info)}
         };
         assert_eq!(info::run(InfoConfig::VERSION), version_output);
     }

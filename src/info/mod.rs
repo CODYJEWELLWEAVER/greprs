@@ -24,5 +24,5 @@ pub fn run(info_config: InfoConfig) -> Output<'static> {
     };
 
     return Output::new(None, output_lines,
-        OutputType::INFO)
+        OutputType::Info)
 }

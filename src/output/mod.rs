@@ -11,9 +11,9 @@ pub struct Output<'a> {
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub enum OutputType {
-    INFO,
-    SEARCH,
-    SEARCH_COUNT,
+    Info,
+    Search,
+    SearchCount,
 }
 
 impl Output<'_> {
@@ -31,15 +31,14 @@ impl Output<'_> {
 
     pub fn display(self) -> () {
         match self.output_type {
-            OutputType::INFO => {
+            OutputType::Info => {
                 print_output(self.output_lines);
             },
-            OutputType::SEARCH => {
-                // 
+            OutputType::Search => {
                 print_search_config(self.search_config.unwrap());
                 print_output(self.output_lines);
             },
-            OutputType::SEARCH_COUNT => {
+            OutputType::SearchCount => {
                 print_count(self.output_lines);
             }
         };

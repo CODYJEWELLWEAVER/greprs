@@ -1,27 +1,43 @@
-pub mod search;
+use std::collections::HashMap;
+
+pub mod search_config;
 mod parse;
 
-use search::SearchConfig;
+use search_config::SearchConfig;
 
 use crate::consts::ERR_MSG_USAGE_HINT;
 use crate::consts::GREPRS_HELP_OPTION;
 use crate::consts::GREPRS_VERSION_OPTION;
 
+/**
+ * Holds configuration for greprs::run to use.
+ */
 pub struct Config<'a> {
     pub search_config:  Option<SearchConfig<'a>>,
     pub info_config: Option<InfoConfig>
 }
 
+// Wraps search arguments.
 pub struct SearchArgs<'a> {
     pub query: &'a str,
     pub content: &'a str,
 }
 
-pub struct OptionArgs<'a> {
-    pub options: Vec<&'a str>,
-    pub option_values: Vec<&'a str>
+#[derive(Debug)]
+#[derive(PartialEq, Eq, Hash)]
+pub enum OptionType {
+    CaseInsensitive,
+    InvertMatch,
+    CountOutput,
+    Unknown,
 }
 
+// Wraps option args and their associated values.
+pub struct OptionArgs<'a> {
+    pub options: HashMap<OptionType, Vec<&'a str>>
+}
+
+// Defines configurations for info::run()
 pub enum InfoConfig {
     HELP,
     VERSION,
@@ -34,7 +50,7 @@ impl Config<'_> {
     // Return: Result<config: Config, errMsg: &'static str>
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
-            if args.len() == 2 {
+            if args.len() == 2 { // Check for a help option
                 let help_option = String::from(GREPRS_HELP_OPTION);
                 let version_option = String::from(GREPRS_VERSION_OPTION);
                 // Check if a info option is present.
@@ -63,7 +79,7 @@ impl Config<'_> {
             // If no information option is passed in 
             // requires file and query arguments.
             return Err(
-                "Not enough arguments."
+                ERR_MSG_USAGE_HINT
             );
         }
         
@@ -72,9 +88,7 @@ impl Config<'_> {
         // Parses arguments for program options
         let option_args = parse::parse_option_args(&args)?;
 
-        // Check if search is case sensitive.
         let search_config: SearchConfig = SearchConfig::new(search_args, option_args)?;
-        // Build information configuration to be used for run.
 
         Ok( 
             Config { 

@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+use crate::config::OptionType;
 use super::SearchArgs;
 use super::OptionArgs;
-use super::parse;
+
 
 mod test;
 
@@ -21,13 +23,24 @@ impl SearchConfig<'_> {
     ) -> Result<SearchConfig<'a>, &'static str> {
         let query = search_args.query;
         let content = search_args.content;
+        let options: HashMap<OptionType, Vec<& str>> = option_args.options;
 
-        // Parse Search Options
-        let case_sensitive: bool = parse::parse_case_sensitive(&option_args);
-        let invert_match: bool = parse::parse_invert_match(&option_args);
+        let case_sensitive: bool 
+        = if options.contains_key(&OptionType::CaseInsensitive) {
+                // A case sensitive option overrides
+                // a case insensitive option.
+                false
+        } else { true };
 
-        // Search Output Options
-        let count_output: bool = parse::parse_count_option(&option_args);
+        let invert_match: bool 
+        = if options.contains_key(&OptionType::InvertMatch) {
+            true
+        } else { false };
+
+        let count_output: bool 
+        = if options.contains_key(&OptionType::CountOutput) {
+            true
+        } else { false };
         
         Ok(
             SearchConfig {

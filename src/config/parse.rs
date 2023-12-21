@@ -1,23 +1,26 @@
-use std::env;
+use std::collections::HashMap;
 use crate::config::OptionArgs;
 use crate::config::SearchArgs;
-use crate::consts;
 use crate::consts::COUNT_OUTPUT_OPTION_0;
 use crate::consts::COUNT_OUTPUT_OPTION_1;
 use crate::consts::{ CASE_INSENSITIVE_OPTION_0, INVERT_MATCH_OPTION_0, INVERT_MATCH_OPTION_1,
-CASE_INSENSITIVE_OPTION_1, CASE_SENSITIVE_OPTION_0 };
+CASE_INSENSITIVE_OPTION_1 };
+
+use super::OptionType;
 
 
 #[cfg(test)]
 mod test {
-    use super::parse_option_args;
+    use crate::config::OptionType;
+    use super::*;
 
     #[test]
     fn parse_options() {
-        let test_args = ["-i".to_string(), "-d".to_string(), "--D".to_string(), "dummy value".to_string()];
+        let test_args = ["-i".to_string(),];
         let option_args = parse_option_args(&test_args).unwrap();
-        assert_eq!(option_args.options, test_args[..3]);
-        assert_eq!(option_args.option_values, test_args[3..]);
+        let mut map: HashMap<OptionType, Vec<& str>> = HashMap::new();
+        map.insert(OptionType::CaseInsensitive, Vec::new());
+        assert_eq!(option_args.options, map);
     }
 }
 
@@ -25,25 +28,54 @@ mod test {
 // their respective values. Option args are then passed into
 // SearchConfig, OutputConfig, etc..
 pub fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static str> {
-    let mut options: Vec<&str> = Vec::new();
-    let mut option_values: Vec<&str> = Vec::new();
+    let mut options: HashMap<OptionType, Vec<&'a str>> = HashMap::new();
+    
     for i in 0..args.len() {
         // Parse options that take some sort of input for configuration.
         if args[i].starts_with("--") {
             if i == args.len() - 1 {
                 return Err("Cannot parse options, run 'greprs help' for usage help.")
             }
-
-            options.push(&args[i]);
+            let mut option_values: Vec<& str> = Vec::new();
             option_values.push(&args[i+1]);
+            // TODO: ADD OPTIONS THAT REQUIRE INPUT
+            
         }
         // Parse options that need no additional input for configuration.
         else if args[i].starts_with("-") {
-            options.push(&args[i]);
+            let option_type = match_option_type(&args[i]);
+            match option_type {
+                OptionType::Unknown => {
+                    return Err("Unknown option parameter!")
+                }
+                _ => {
+                    // For options that need no 
+                    // values passed in adds 
+                    // and empty vector to map.
+                    options.insert(option_type, Vec::new());
+                }
+            };
         }
     }
 
-    Ok(OptionArgs{ options, option_values })
+    Ok(OptionArgs{ options })
+}
+
+fn match_option_type(arg: & str) -> OptionType {
+    return match arg {
+        // Simple options (no additional values needed)
+        // Case insensitive options
+        CASE_INSENSITIVE_OPTION_0 |
+        CASE_INSENSITIVE_OPTION_1 => OptionType::CaseInsensitive,
+        // Invert match Options
+        INVERT_MATCH_OPTION_0 |
+        INVERT_MATCH_OPTION_1 => OptionType::InvertMatch,
+        // Count output options
+        COUNT_OUTPUT_OPTION_0 |
+        COUNT_OUTPUT_OPTION_1 => OptionType::CountOutput,
+        // Value options (additional values needed)
+        _ => OptionType::Unknown,
+    }
 }
 
 // Parses input args for query and content arguments
@@ -70,7 +102,7 @@ pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static s
         Ok(SearchArgs{query, content})
     }
 }
-
+/* 
 /**
  * Checks both enviroment variables and cl arguments to determine 
  * if search is case sensitive. CL arguments take priority over 
@@ -145,4 +177,4 @@ pub fn parse_count_option(option_args: &OptionArgs) -> bool {
     }
 
     return false
-}
+} */

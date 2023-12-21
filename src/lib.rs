@@ -7,7 +7,7 @@ pub mod config;
 pub mod consts;
 
 use config::{Config, InfoConfig};
-use config::search::SearchConfig;
+use config::search_config::SearchConfig;
 use output::Output;
 
 // Internal modules

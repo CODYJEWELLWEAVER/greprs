@@ -1,4 +1,4 @@
-use crate::config::search::SearchConfig;
+use crate::config::search_config::SearchConfig;
 use crate::matcher;
 use crate::output::{Output, OutputType};
 
@@ -22,10 +22,10 @@ pub fn run<'a>(
     }
 
     let output_type = if search_config.count_output {
-        OutputType::SEARCH_COUNT
+        OutputType::SearchCount
     }
     else {
-        OutputType::SEARCH
+        OutputType::Search
     };
 
     let search_output = Output::new(
