@@ -1,4 +1,5 @@
 extern crate greprs;
+extern crate regex;
 
 use std::env;
 use std::process;

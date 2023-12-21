@@ -5,14 +5,18 @@ pub const CASE_INSENSITIVE_VAR: &str = "CASE_INSENSITIVE";
 pub const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 pub const UNKNOWN_VERSION: &str = "UNKNOWN VERSION";
 
-// CASE SENSITIVITY ARGUMENTS
-pub const CASE_INSENSITIVE_ARG_0: &str = "-ignore-case";
-pub const CASE_INSENSITIVE_ARG_1: &str = "-i";
-pub const CASE_SENSITIVE_ARG_0: &str = "-no-ignore-case";
+// CASE SENSITIVITY OPTIONS
+pub const CASE_INSENSITIVE_OPTION_0: &str = "-ignore-case";
+pub const CASE_INSENSITIVE_OPTION_1: &str = "-i";
+pub const CASE_SENSITIVE_OPTION_0: &str = "-no-ignore-case";
 
 // INFORMATION OPTIONS
 pub const GREPRS_HELP_OPTION: &str = "help";
 pub const GREPRS_VERSION_OPTION: &str = "version";
+
+// INVERT MATCH OPTIONS
+pub const INVERT_MATCH_OPTION_0: &str = "-v";
+pub const INVERT_MATCH_OPTION_1: &str = "-invert-match";
 
 // GREPRS ERROR MSGS
 pub const ERROR_MSG_USAGE_HINT: &'static str = "Not enough arguments: Run 'greprs help' for usage help...";

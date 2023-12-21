@@ -4,6 +4,7 @@ use std::io::prelude::*;
 
 // Define modules to expose.
 pub mod config;
+mod matcher;
 use config::{Config, InfoConfig};
 use config::search::SearchConfig;
 
@@ -53,10 +54,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let search_config = SearchConfig {
         query: search_config.query,
         content: &file_contents,
-        case_sensitive: search_config.case_sensitive
+        case_sensitive: search_config.case_sensitive,
+        invert_match: search_config.invert_match,
     };
 
-    let search_results = search::run(&search_config);
+    let search_results = search::run(&search_config)?;
 
     print_search_config(&search_config);
 
