@@ -6,6 +6,7 @@ use std::process;
 use std::io::prelude::*;
 
 use greprs::config::Config;
+use greprs::consts;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -15,19 +16,21 @@ fn main() {
             .unwrap_or_else(|err: &str| { 
                 writeln!(
                     &mut stderr,
-                    "Problem parsing arguments: {}",
+                    "{} {}",
+                    consts::ERR_MSG_PARSING_ARGS,
                     err,
-                ).expect("Could not write to stderr");
+                ).expect(consts::ERR_MSG_STD_ERR_WRITE);
 
                 process::exit(1);
             });
 
-    if let Err(e) = greprs::run(config) {
+    if let Err(err) = greprs::run(config) {
         writeln!(
             &mut stderr,
-            "Application error: {}",
-            e,
-        ).expect("Could not write to stderr");
+            "{} {}",
+            consts::ERR_MSG_APP_ERR,
+            err,
+        ).expect(consts::ERR_MSG_STD_ERR_WRITE);
 
         process::exit(1);
     }

@@ -1,18 +1,19 @@
 #[cfg(test)]
 pub mod info_tests {
-    use crate::consts::{UNKNOWN_VERSION, self, };
+    use crate::consts::{self, };
     use crate::info::{self, InfoConfig};
     use crate::Config;
+    use crate::output::{OutputType, Output};
 
     #[test]
     fn info_run_version() {
-        let version_output: &str = match consts::VERSION {
+        let version_output = match consts::VERSION {
             Some(version_string) => {
-                version_string
+                Output::new(None, vec!(version_string), OutputType::INFO)
             },
-            None => {UNKNOWN_VERSION}
+            None => {Output::new(None, vec!(consts::UNKNOWN_VERSION), OutputType::INFO)}
         };
-        assert_eq!(info::run(InfoConfig::VERSION), [version_output]);
+        assert_eq!(info::run(InfoConfig::VERSION), version_output);
     }
 
     #[test]

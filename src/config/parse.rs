@@ -1,5 +1,12 @@
+use std::env;
 use crate::config::OptionArgs;
 use crate::config::SearchArgs;
+use crate::consts;
+use crate::consts::COUNT_OUTPUT_OPTION_0;
+use crate::consts::COUNT_OUTPUT_OPTION_1;
+use crate::consts::{ CASE_INSENSITIVE_OPTION_0, INVERT_MATCH_OPTION_0, INVERT_MATCH_OPTION_1,
+CASE_INSENSITIVE_OPTION_1, CASE_SENSITIVE_OPTION_0 };
+
 
 #[cfg(test)]
 mod test {
@@ -62,4 +69,80 @@ pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static s
         let content: &str = &args[3];
         Ok(SearchArgs{query, content})
     }
+}
+
+/**
+ * Checks both enviroment variables and cl arguments to determine 
+ * if search is case sensitive. CL arguments take priority over 
+ * enviroment variables. Returns true if search is case sensitive.
+ */
+pub fn parse_case_sensitive(option_args: &OptionArgs) -> bool{
+    // Check env var.
+    let var_result = match env::var_os(consts::CASE_INSENSITIVE_VAR) {
+        Some(s) => s == "0",
+        None => true,
+    };
+
+    // Check for command line argument.
+    if option_args.options.len() < 1 {
+        // Default to eviroment var if 
+        // no args passed in.
+        return var_result
+    } else {
+        let options = &option_args.options;
+        for option in options {
+            match *option {
+                CASE_INSENSITIVE_OPTION_0 |
+                CASE_INSENSITIVE_OPTION_1 => return false,
+                CASE_SENSITIVE_OPTION_0 => return true,
+                _ => {},
+            }
+        }
+
+        return true
+    };
+}
+
+/*
+ * Parses options list to find an 
+ * invert match option.
+ */
+pub fn parse_invert_match(option_args: &OptionArgs) -> bool {
+    let options: &Vec<& str> = &option_args.options;
+    if !options.is_empty() {
+        for option in options {
+            match *option {
+                INVERT_MATCH_OPTION_0 |
+                INVERT_MATCH_OPTION_1 => {
+                    return true
+                },
+                _ => {}
+            }
+        }
+
+        return false
+    }
+
+    return false
+}
+
+/*
+ * Parses options list to find a
+ * count output lines option.
+*/
+pub fn parse_count_option(option_args: &OptionArgs) -> bool {
+    let options: &Vec<& str> = &option_args.options;
+    if !options.is_empty() {
+        for option in options {
+            match *option {
+                COUNT_OUTPUT_OPTION_0 |
+                COUNT_OUTPUT_OPTION_1 => {
+                    return true
+                }
+                _ => {}
+            }
+        }
+    }
+
+    return false
 }

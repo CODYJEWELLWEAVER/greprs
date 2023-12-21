@@ -2,31 +2,31 @@
 pub mod search_config_tests {
     use crate::config::OptionArgs;
     use crate::config::SearchArgs;
-    use crate::config::search;
     use crate::config::search::SearchConfig;
+    use crate::config::parse;
 
     #[test]
     fn parse_invert() {
         let option_args = OptionArgs {options: vec![&"-invert-match"], option_values: [].to_vec()};
-        assert_eq!(search::parse_invert_match(&option_args), true);
+        assert_eq!(parse::parse_invert_match(&option_args), true);
 
         let option_args = OptionArgs {options: vec![&"-v"], option_values: [].to_vec()};
-        assert_eq!(search::parse_invert_match(&option_args), true);
+        assert_eq!(parse::parse_invert_match(&option_args), true);
 
         let option_args = OptionArgs {options: vec![&"-ignore-case", &"-i", &"-a"], option_values: [].to_vec()};
-        assert_eq!(search::parse_invert_match(&option_args), false);
+        assert_eq!(parse::parse_invert_match(&option_args), false);
     }
 
     #[test]
     fn parse_sensitive() {
         let option_args = OptionArgs {options: vec![&"-ignore-case"], option_values: [].to_vec()};
-        assert_eq!(search::parse_case_sensitive(&option_args), false);
+        assert_eq!(parse::parse_case_sensitive(&option_args), false);
 
         let option_args = OptionArgs {options: vec![&"-no-ignore-case"], option_values: [].to_vec()};
-        assert_eq!(search::parse_case_sensitive(&option_args), true);
+        assert_eq!(parse::parse_case_sensitive(&option_args), true);
 
         let option_args = OptionArgs {options: vec![&"-i"], option_values: [].to_vec()};
-        assert_eq!(search::parse_case_sensitive(&option_args), false);
+        assert_eq!(parse::parse_case_sensitive(&option_args), false);
     }
 
     #[test]

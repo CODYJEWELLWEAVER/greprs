@@ -1,30 +1,37 @@
 // Name of case sensitivity variable. Set with export CASE_INSENSITIVE=(0 or 1)
-pub const CASE_INSENSITIVE_VAR: &str = "CASE_INSENSITIVE";
+pub const CASE_INSENSITIVE_VAR: &'static str = "CASE_INSENSITIVE";
 
 // GREPRS VERSION
 pub const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
-pub const UNKNOWN_VERSION: &str = "UNKNOWN VERSION";
+pub const UNKNOWN_VERSION: &'static str = "UNKNOWN VERSION";
 
 // CASE SENSITIVITY OPTIONS
-pub const CASE_INSENSITIVE_OPTION_0: &str = "-ignore-case";
-pub const CASE_INSENSITIVE_OPTION_1: &str = "-i";
-pub const CASE_SENSITIVE_OPTION_0: &str = "-no-ignore-case";
+pub const CASE_INSENSITIVE_OPTION_0: &'static str = "-ignore-case";
+pub const CASE_INSENSITIVE_OPTION_1: &'static str = "-i";
+pub const CASE_SENSITIVE_OPTION_0: &'static str = "-no-ignore-case";
 
 // INFORMATION OPTIONS
-pub const GREPRS_HELP_OPTION: &str = "help";
-pub const GREPRS_VERSION_OPTION: &str = "version";
+pub const GREPRS_HELP_OPTION: &'static str = "help";
+pub const GREPRS_VERSION_OPTION: &'static str = "version";
 
 // INVERT MATCH OPTIONS
-pub const INVERT_MATCH_OPTION_0: &str = "-v";
-pub const INVERT_MATCH_OPTION_1: &str = "-invert-match";
+pub const INVERT_MATCH_OPTION_0: &'static str = "-v";
+pub const INVERT_MATCH_OPTION_1: &'static str = "-invert-match";
+
+// COUNT OUTPUT LINE OPTIONS
+pub const COUNT_OUTPUT_OPTION_0: &'static str = "-c";
+pub const COUNT_OUTPUT_OPTION_1: &'static str = "-count";
 
 // GREPRS ERROR MSGS
-pub const ERROR_MSG_USAGE_HINT: &'static str = "Not enough arguments: Run 'greprs help' for usage help...";
+pub const ERR_MSG_USAGE_HINT: &'static str = "Not enough arguments: Run 'greprs help' for usage help...";
+pub const ERR_MSG_PARSING_ARGS: &'static str = "Problem parsing arguments:";
+pub const ERR_MSG_APP_ERR: &'static str = "Application error:";
+pub const ERR_MSG_STD_ERR_WRITE: &'static str = "Could not write to std err!";
 
 // HELP INFORMATION OUTPUT
 ///////////////////////////
 // Output of '$greprs help'
-pub const HELP_INFORMATION_OUTPUT: &str
+pub const HELP_INFORMATION_OUTPUT: &'static str
 = "Welcome to greprs:
 *******************************************************************************
 Usage: 

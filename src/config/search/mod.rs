@@ -1,22 +1,17 @@
-use std::env;
-use crate::consts;
-use crate::consts::CASE_INSENSITIVE_OPTION_0;
-use crate::consts::CASE_INSENSITIVE_OPTION_1;
-use crate::consts::CASE_SENSITIVE_OPTION_0;
-use crate::consts::INVERT_MATCH_OPTION_0;
-use crate::consts::INVERT_MATCH_OPTION_1;
-
 use super::SearchArgs;
 use super::OptionArgs;
+use super::parse;
 
 mod test;
 
 #[derive(Debug)]
+#[derive(PartialEq)]
 pub struct SearchConfig<'a> {
     pub query: &'a str,
     pub content: &'a str,
     pub case_sensitive: bool,
     pub invert_match: bool,
+    pub count_output: bool,
 }
 
 impl SearchConfig<'_> {
@@ -28,71 +23,20 @@ impl SearchConfig<'_> {
         let content = search_args.content;
 
         // Parse Search Options
-        let case_sensitive = parse_case_sensitive(&option_args);
-        let invert_match = parse_invert_match(&option_args);
+        let case_sensitive: bool = parse::parse_case_sensitive(&option_args);
+        let invert_match: bool = parse::parse_invert_match(&option_args);
+
+        // Search Output Options
+        let count_output: bool = parse::parse_count_option(&option_args);
         
         Ok(
             SearchConfig {
                 query,
                 content,
                 case_sensitive,
-                invert_match
+                invert_match,
+                count_output
             }
         )
     }
-}
-
-/**
- * Checks both enviroment variables and cl arguments to determine 
- * if search is case sensitive. CL arguments take priority over 
- * enviroment variables. Returns true if search is case sensitive.
- */
-fn parse_case_sensitive(option_args: &OptionArgs) -> bool{
-    // Check env var.
-    let var_result = match env::var_os(consts::CASE_INSENSITIVE_VAR) {
-        Some(s) => s == "0",
-        None => true,
-    };
-
-    // Check for command line argument.
-    if option_args.options.len() < 1 {
-        // Default to eviroment var if 
-        // no args passed in.
-        return var_result
-    } else {
-        let options = &option_args.options;
-        for option in options {
-            match *option {
-                CASE_INSENSITIVE_OPTION_0 |
-                CASE_INSENSITIVE_OPTION_1 => return false,
-                CASE_SENSITIVE_OPTION_0 => return true,
-                _ => {},
-            }
-        }
-
-        return true
-    };
-}
-
-/*
- * Parses options list to find an 
- * invert match option.
- */
-fn parse_invert_match(option_args: &OptionArgs) -> bool {
-    let options = &option_args.options;
-    if !options.is_empty() {
-        for option in options {
-            match *option {
-                INVERT_MATCH_OPTION_0 |
-                INVERT_MATCH_OPTION_1 => {
-                    return true
-                },
-                _ => {}
-            }
-        }
-
-        return false
-    }
-
-    return false
 }

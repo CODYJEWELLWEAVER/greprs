@@ -4,21 +4,17 @@ use std::io::prelude::*;
 
 // Define modules to expose.
 pub mod config;
-mod matcher;
+pub mod consts;
+
 use config::{Config, InfoConfig};
 use config::search::SearchConfig;
+use output::Output;
 
-// Internal modules.
-mod consts;
+// Internal modules
+mod matcher;
 mod search;
 mod info;
-
-//////////////
-// TEST Module
-//////////////
-#[cfg(test)]
-mod test {
-}
+mod output;
 
 // Run greprs
 // Param: config : Config - user specified configuration.
@@ -30,8 +26,8 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // run exists run it and exit.
     match info_config {
         Some(cfg) => {
-            let info_results = info::run(cfg);
-            print_output(info_results);
+            let info_ouput: Output<'_> = info::run(cfg);
+            info_ouput.display();
             return Ok(())
         },
         None => {}
@@ -56,26 +52,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         content: &file_contents,
         case_sensitive: search_config.case_sensitive,
         invert_match: search_config.invert_match,
+        count_output: search_config.count_output,
     };
 
-    let search_results = search::run(&search_config)?;
-
-    print_search_config(&search_config);
-
-    // Display search results.
-    print_output(search_results);
+    let search_output: Output<'_> = search::run(&search_config)?;
+    search_output.display();
 
     Ok(())
-}
-
-pub fn print_output(run_results: Vec<& str>) {
-    for line in run_results {
-        println!("{}", line);
-    }
-}
-
-/* Print Search Configuration Details */
-pub fn print_search_config(config: &SearchConfig) {
-    println!("Searching for: '{}'", config.query);
-    println!("In: {}", config.content);
 }

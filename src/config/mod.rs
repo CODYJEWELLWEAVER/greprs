@@ -3,7 +3,7 @@ mod parse;
 
 use search::SearchConfig;
 
-use crate::consts::ERROR_MSG_USAGE_HINT;
+use crate::consts::ERR_MSG_USAGE_HINT;
 use crate::consts::GREPRS_HELP_OPTION;
 use crate::consts::GREPRS_VERSION_OPTION;
 
@@ -53,7 +53,7 @@ impl Config<'_> {
                     },
                     _ => {
                         Err(
-                            ERROR_MSG_USAGE_HINT
+                            ERR_MSG_USAGE_HINT
                         )
                     }
                 };
