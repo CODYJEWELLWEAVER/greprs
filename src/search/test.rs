@@ -8,14 +8,14 @@ mod search_tests {
     fn case_sensitive_search() {
         let search_config = SearchConfig {
             query: "a", 
-            content: "Hello a\nA New World\n",
+            files: vec!("res/test/haiku.txt"),
             case_sensitive: true,
             invert_match: false,
             count_output: false,
         };
         let output = Output::new(
             Some(&search_config),
-            vec!("Hello a"),
+            vec!(Box::new("is a world of dew,".to_owned()), Box::new("and yet, and yet.".to_owned())),
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
@@ -24,15 +24,15 @@ mod search_tests {
     #[test]
     fn case_insensitive_search() {
         let search_config = SearchConfig {
-            query: "a", 
-            content: "a Hello\nA New World\n",
+            query: "is", 
+            files: vec!("res/test/haiku.txt"),
             case_sensitive: false,
             invert_match: false,
             count_output: false,
         };
         let output = Output::new(
             Some(&search_config),
-            vec!("a Hello", "A New World"),
+            vec!(Box::new("This world of dew".to_string()), Box::new("is a world of dew,".to_string())),
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
@@ -41,43 +41,45 @@ mod search_tests {
     #[test]
     fn invert_match_search() {
         let search_config = SearchConfig {
-            query: "query", 
-            content: "a Hello\nA New World\n",
+            query: "dew", 
+            files: vec!("res/test/haiku.txt"),
             case_sensitive: false,
             invert_match: true,
             count_output: false,
         };
         let output = Output::new(
             Some(&search_config),
-            vec!("a Hello", "A New World"),
+            vec!(Box::new("and yet, and yet.".to_string())),
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
 
         let search_config = SearchConfig {
             query: "a", 
-            content: "a Hello\nA New World\n",
+            files: vec!("res/test/haiku.txt"),
             case_sensitive: true,
             invert_match: true,
             count_output: false,
         };
         let output = Output::new(
             Some(&search_config),
-            vec!("A New World"),
+            vec!(Box::new("This world of dew".to_string())),
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
 
         let search_config = SearchConfig {
             query: "test", 
-            content: "A test!\nNot one!\nAnother Test!",
+            files: vec!("res/test/haiku.txt"),
             case_sensitive: false,
             invert_match: true,
             count_output: false,
         };
         let output = Output::new(
             Some(&search_config),
-            vec!("Not one!"),
+            vec!(Box::new("This world of dew".to_string()),
+                                Box::new("is a world of dew,".to_string()),
+                                Box::new("and yet, and yet.".to_string())),
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);

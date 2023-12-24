@@ -10,7 +10,7 @@ mod test;
 #[derive(PartialEq)]
 pub struct SearchConfig<'a> {
     pub query: &'a str,
-    pub content: &'a str,
+    pub files: Vec<&'a str>,
     pub case_sensitive: bool,
     pub invert_match: bool,
     pub count_output: bool,
@@ -22,7 +22,7 @@ impl SearchConfig<'_> {
         option_args: OptionArgs
     ) -> Result<SearchConfig<'a>, &'static str> {
         let query = search_args.query;
-        let content = search_args.content;
+        let files = search_args.files;
         let options: HashMap<OptionType, Vec<& str>> = option_args.options;
 
         let case_sensitive: bool 
@@ -45,7 +45,7 @@ impl SearchConfig<'_> {
         Ok(
             SearchConfig {
                 query,
-                content,
+                files,
                 case_sensitive,
                 invert_match,
                 count_output

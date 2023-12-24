@@ -25,10 +25,9 @@ impl MatchPattern {
             }
         )
     }
-}
 
-pub fn matches(line: &str,
-     match_pattern: &MatchPattern) -> bool {
-    return match_pattern.pattern
-            .is_match(line) != match_pattern.invert
+    pub fn matches(&self, line: &str) -> bool {
+       return self.pattern
+               .is_match(line) != self.invert
+   }
 }

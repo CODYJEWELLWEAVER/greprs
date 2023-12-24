@@ -80,26 +80,36 @@ fn match_option_type(arg: & str) -> OptionType {
 
 // Parses input args for query and content arguments
 // Returns Err(msg) on failure and SearchArgs on success.
+// Parameter 'args' is guaranteed to be of length 4 or greater
 pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
+    let mut files: Vec<&str> = Vec::new();
     if args[2] != "in".to_string() {
         let query: &str = &args[1];
-        let content: &str = &args[2]; 
+        // Check for files in &args
+        for arg in &args[2..] {
+            if !arg.starts_with('-') {
+                files.push(arg);
+            }
+        }
 
-        if query.is_empty() || content.is_empty() {
+        if query.is_empty() || files.is_empty() {
             return Err(
                 "Error parsing query and content args. Run 'greprs help' for detailed information."
             )
-        }
-        else {
-            return Ok(SearchArgs{query, content})
+        } else {
+            return Ok(SearchArgs{query, files})
         }
     }
     else {
-        // Define query arguments using <query> in <content> syntax.
+        // Define query arguments using <query> in [<files>, ...] syntax.
         // Default for content is a filename.
         let query: &str = &args[1];
-        let content: &str = &args[3];
-        Ok(SearchArgs{query, content})
+        for arg in &args[3..] {
+            if !arg.starts_with('-') {
+                files.push(arg);
+            }
+        }
+        Ok(SearchArgs{query, files})
     }
 }
 /* 
