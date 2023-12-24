@@ -60,7 +60,7 @@ fn print_search_config(search_config: &SearchConfig) {
     println!("Searching for: '{}'", search_config.query);
     print!("In: ");
     for file_name in &search_config.files[..] {
-        print!("{} ", file_name);
+        print!("<{}> ", file_name);
     }
     print!("\n");
 }

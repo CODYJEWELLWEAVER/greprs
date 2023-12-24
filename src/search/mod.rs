@@ -12,16 +12,33 @@ mod test;
 pub fn run<'a>(
     search_config: &'a SearchConfig<'a>
 ) -> Result<Output<'_>, Box<dyn Error>> {
-    let file_contents: Vec<String> = open_files(&search_config.files)?;
+    let open_files: Vec<OpenFile> = open_files(&search_config.files)?;
+    let num_files = &search_config.files.len();
 
     let mut search_results = Vec::new();
     let match_pattern = matcher::MatchPattern::new(search_config)?;
 
-    for file in file_contents {
-        for line in file.clone().lines() {
+    for file in open_files {
+        for line in file.contents.lines() {
             if match_pattern.matches(line) {
-                search_results.push(Box::new(line.to_string()));
+                // Moves output lines to heap to be returned
+                let boxed_line_string = match num_files {
+                    1 => {
+                        Box::new(line.to_string())
+                    },
+                    _ => {
+                        // Append file name to output when searching more 
+                        // than one file.
+                        Box::new(String::from(format!("<{}>\t", file.name)) + &line)
+                    }
+                };
+
+                search_results.push(boxed_line_string);
             }
+        }
+        if *(num_files) > 1 {
+            // add file output separator
+            search_results.push(Box::new("\n".to_string()))
         }
     }
 
@@ -41,17 +58,32 @@ pub fn run<'a>(
     Ok(search_output)
 }
 
-fn open_files(files: &Vec<& str>) 
--> Result<Vec<String>, Box<dyn Error>> {
+// Associates a content string with a file name
+struct OpenFile<'a> {
+    name: &'a str,
+    contents: String
+}
+
+impl OpenFile<'_> {
+    pub fn new(name: &str, contents: String) -> OpenFile<'_> {
+        return OpenFile {
+            name,
+            contents
+        }
+    }
+}
+
+fn open_files<'a>(files: &'a Vec<& str>) 
+-> Result<Vec<OpenFile<'a>>, Box<dyn Error>> {
     let mut stderr = std::io::stderr();
 
-    let mut file_contents: Vec<String> = Vec::new();
+    let mut open_files: Vec<OpenFile> = Vec::new();
 
     for file_name in files.iter() {
-        
         if let Ok(mut file) = File::open(file_name) {
             if let Ok(content_string) = io::read_to_string(&mut file) {
-                file_contents.push(content_string);
+                let open_file = OpenFile::new(file_name, content_string);
+                open_files.push(open_file);
             } else {
                 writeln!(
                     &mut stderr,
@@ -69,12 +101,12 @@ fn open_files(files: &Vec<& str>)
         }   
     }
 
-    return match file_contents.len() {
+    return match open_files.len() {
         0 => {
             Err(Box::from("Could not open any files!"))
         },
         _ => {
-            Ok(file_contents)
+            Ok(open_files)
         }
     };
 }

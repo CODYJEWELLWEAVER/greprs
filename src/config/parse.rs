@@ -80,7 +80,6 @@ fn match_option_type(arg: & str) -> OptionType {
 
 // Parses input args for query and content arguments
 // Returns Err(msg) on failure and SearchArgs on success.
-// Parameter 'args' is guaranteed to be of length 4 or greater
 pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
     let mut files: Vec<&str> = Vec::new();
     if args[2] != "in".to_string() {
@@ -109,82 +108,11 @@ pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static s
                 files.push(arg);
             }
         }
-        Ok(SearchArgs{query, files})
-    }
-}
-/* 
-/**
- * Checks both enviroment variables and cl arguments to determine 
- * if search is case sensitive. CL arguments take priority over 
- * enviroment variables. Returns true if search is case sensitive.
- */
-pub fn parse_case_sensitive(option_args: &OptionArgs) -> bool{
-    // Check env var.
-    let var_result = match env::var_os(consts::CASE_INSENSITIVE_VAR) {
-        Some(s) => s == "0",
-        None => true,
-    };
-
-    // Check for command line argument.
-    if option_args.options.len() < 1 {
-        // Default to eviroment var if 
-        // no args passed in.
-        return var_result
-    } else {
-        let options = &option_args.options;
-        for option in options {
-            match *option {
-                CASE_INSENSITIVE_OPTION_0 |
-                CASE_INSENSITIVE_OPTION_1 => return false,
-                CASE_SENSITIVE_OPTION_0 => return true,
-                _ => {},
-            }
-        }
-
-        return true
-    };
-}
-
-/*
- * Parses options list to find an 
- * invert match option.
- */
-pub fn parse_invert_match(option_args: &OptionArgs) -> bool {
-    let options: &Vec<& str> = &option_args.options;
-    if !options.is_empty() {
-        for option in options {
-            match *option {
-                INVERT_MATCH_OPTION_0 |
-                INVERT_MATCH_OPTION_1 => {
-                    return true
-                },
-                _ => {}
-            }
-        }
-
-        return false
-    }
-
-    return false
-}
-
-/*
- * Parses options list to find a
- * count output lines option.
-*/
-pub fn parse_count_option(option_args: &OptionArgs) -> bool {
-    let options: &Vec<& str> = &option_args.options;
-    if !options.is_empty() {
-        for option in options {
-            match *option {
-                COUNT_OUTPUT_OPTION_0 |
-                COUNT_OUTPUT_OPTION_1 => {
-                    return true
-                }
-                _ => {}
-            }
+        
+        return if files.is_empty() {
+            Err("No file arguments!")
+        } else {
+            Ok(SearchArgs{query, files})
         }
     }
-
-    return false
-} */
+}
