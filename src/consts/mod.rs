@@ -24,6 +24,8 @@ pub const ERR_MSG_USAGE_HINT: &'static str = "Not enough arguments: Run 'greprs 
 pub const ERR_MSG_PARSING_ARGS: &'static str = "Problem parsing arguments:";
 pub const ERR_MSG_APP_ERR: &'static str = "Application error:";
 pub const ERR_MSG_STD_ERR_WRITE: &'static str = "Could not write to std err!";
+pub const ERR_MSG_NO_SEARCH_CFG: &'static str = "No search configuration! Exiting...";
+pub const ERR_MSG_NO_OPEN_FILES: &'static str = "Could not open any files!";
 
 // HELP INFORMATION OUTPUT
 ///////////////////////////
@@ -33,9 +35,9 @@ pub const HELP_INFORMATION_OUTPUT: &'static str
 *******************************************************************************
 Usage: 
   -Basic: $greprs <query> <path/to/file>
-  -Basic w/ options: $greprs <query> [<path/to/file>, ...] [<option>, ...]
-  -Alt: $greprs <query> in <path/to/file>
-  -Alt w/ options: $greprs <query> in [<path/to/file>, ...] [<option>, ...]
+  -Basic w/ options: $greprs <query> [<path/to/file>,...] [<option>,...]
+  -Alt: $greprs q:<query> <path/to/file>
+  -Alt w/ options: $greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
 *******************************************************************************
 Help:
   -Documentation: $greprs help

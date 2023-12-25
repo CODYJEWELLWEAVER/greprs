@@ -29,7 +29,7 @@ impl Output<'_> {
         }
     }
 
-    pub fn display(self) -> () {
+    pub fn display(self) {
         match self.output_type {
             OutputType::Info => {
                 print_output(&self.output_lines);
@@ -57,10 +57,16 @@ fn print_output(lines: &Vec<Box<String>>) {
 
 /* Print Search Configuration Details */
 fn print_search_config(search_config: &SearchConfig) {
-    println!("Searching for: '{:?}'", search_config.queries);
+    if search_config.queries.len() == 1 {
+        // Removes surrounding braces with 1 query
+        println!("Searching for: {}", search_config.queries[0])
+    } else {
+        println!("Searching for: {:?}", search_config.queries);
+    }
     print!("In: ");
     for file_name in &search_config.files[..] {
         print!("<{}> ", file_name);
     }
-    print!("\n");
+    // end files line and prints spacer
+    println!("\n");
 }

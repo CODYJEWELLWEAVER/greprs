@@ -33,7 +33,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let search_config: SearchConfig = match config.search_config {
         Some(cfg) => cfg,
         // Return Error if no config found.
-        None => return Err(Box::from("No search configuration! Exiting..."))
+        None => return Err(Box::from(consts::ERR_MSG_NO_SEARCH_CFG))
     };
 
     let search_output: Output<'_> = search::run(&search_config)?;

@@ -5,7 +5,7 @@ use crate::output::{Output, OutputType};
 mod test;
 
 /* Run a InfoConfig. 
-   Prints a vector of output strings. */
+   Returns a vector of output strings. */
 pub fn run(info_config: InfoConfig) -> Output<'static> {
     let output_lines: Vec<Box<String>> = match info_config {
         InfoConfig::HELP => {

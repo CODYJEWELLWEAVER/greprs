@@ -25,7 +25,7 @@ impl MatchPattern {
 
         Ok(
             MatchPattern { 
-                patterns: patterns, 
+                patterns, 
                 invert: search_config.invert_match
             }
         )

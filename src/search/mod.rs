@@ -1,5 +1,5 @@
 use crate::config::search_config::SearchConfig;
-use crate::matcher;
+use crate::{matcher, consts};
 use crate::output::{Output, OutputType};
 use std::error::Error;
 use std::fs::File;
@@ -106,7 +106,7 @@ fn open_files<'a>(files: &'a Vec<& str>)
 
     return match open_files.len() {
         0 => {
-            Err(Box::from("Could not open any files!"))
+            Err(Box::from(consts::ERR_MSG_NO_OPEN_FILES))
         },
         _ => {
             Ok(open_files)
