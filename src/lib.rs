@@ -8,7 +8,6 @@ use config::{Config, InfoConfig};
 use config::search_config::SearchConfig;
 use output::Output;
 
-// Internal modules
 mod matcher;
 mod search;
 mod info;

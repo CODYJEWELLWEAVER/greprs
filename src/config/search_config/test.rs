@@ -8,14 +8,14 @@ pub mod search_config_tests {
 
     #[test]
     fn default_options() {
-        let search_args = SearchArgs{query: "Hello", files: vec!("res/test/poem.txt")};
+        let search_args = SearchArgs{queries: vec!("Hello"), files: vec!("res/test/poem.txt")};
         let options_map: HashMap<OptionType, Vec<&str>> = HashMap::new();
         let option_args = OptionArgs {
             options: options_map
         };
         let search_config = SearchConfig::new(search_args, option_args).unwrap();
 
-        assert_eq!(search_config.query, "Hello");
+        assert_eq!(search_config.queries, vec!("Hello"));
         assert_eq!(search_config.files, vec!("res/test/poem.txt"));
         assert_eq!(search_config.case_sensitive, true);
         assert_eq!(search_config.invert_match, false);
@@ -24,7 +24,7 @@ pub mod search_config_tests {
 
     #[test]
     fn case_insensitive() {
-        let search_args = SearchArgs{query: "Hello", files: vec!("res/test/poem.txt")};
+        let search_args = SearchArgs{queries: vec!("Hello"), files: vec!("res/test/poem.txt")};
         let mut options_map: HashMap<OptionType, Vec<&str>> = HashMap::new();
         options_map.insert(OptionType::CaseInsensitive, Vec::new());
         let option_args = OptionArgs {
@@ -32,7 +32,7 @@ pub mod search_config_tests {
         };
         let search_config = SearchConfig::new(search_args, option_args).unwrap();
 
-        assert_eq!(search_config.query, "Hello");
+        assert_eq!(search_config.queries, vec!("Hello"));
         assert_eq!(search_config.files, vec!("res/test/poem.txt"));
         assert_eq!(search_config.case_sensitive, false);
         assert_eq!(search_config.invert_match, false);
@@ -41,7 +41,7 @@ pub mod search_config_tests {
 
     #[test]
     fn invert_and_case_insensitive() {
-        let search_args = SearchArgs{query: "Hello", files: vec!("res/test/poem.txt")};
+        let search_args = SearchArgs{queries: vec!("Hello"), files: vec!("res/test/poem.txt")};
         let mut options_map: HashMap<OptionType, Vec<&str>> = HashMap::new();
         options_map.insert(OptionType::CaseInsensitive, Vec::new());
         options_map.insert(OptionType::InvertMatch, Vec::new());
@@ -50,7 +50,7 @@ pub mod search_config_tests {
         };
         let search_config = SearchConfig::new(search_args, option_args).unwrap();
 
-        assert_eq!(search_config.query, "Hello");
+        assert_eq!(search_config.queries, vec!("Hello"));
         assert_eq!(search_config.files, vec!("res/test/poem.txt"));
         assert_eq!(search_config.case_sensitive, false);
         assert_eq!(search_config.invert_match, true);
@@ -59,7 +59,7 @@ pub mod search_config_tests {
 
     #[test]
     fn count_output_and_invert_match() {
-        let search_args = SearchArgs{query: "Hello", files: vec!("res/test/poem.txt")};
+        let search_args = SearchArgs{queries: vec!("Hello"), files: vec!("res/test/poem.txt")};
         let mut options_map: HashMap<OptionType, Vec<&str>> = HashMap::new();
         options_map.insert(OptionType::CountOutput, Vec::new());
         options_map.insert(OptionType::InvertMatch, Vec::new());
@@ -68,7 +68,7 @@ pub mod search_config_tests {
         };
         let search_config = SearchConfig::new(search_args, option_args).unwrap();
 
-        assert_eq!(search_config.query, "Hello");
+        assert_eq!(search_config.queries, vec!("Hello"));
         assert_eq!(search_config.files, vec!("res/test/poem.txt"));
         assert_eq!(search_config.case_sensitive, true);
         assert_eq!(search_config.invert_match, true);

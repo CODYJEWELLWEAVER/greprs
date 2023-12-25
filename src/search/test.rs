@@ -7,7 +7,7 @@ mod search_tests {
     #[test]
     fn case_sensitive_search() {
         let search_config = SearchConfig {
-            query: "a", 
+            queries: vec!("a"), 
             files: vec!("res/test/haiku.txt"),
             case_sensitive: true,
             invert_match: false,
@@ -24,7 +24,7 @@ mod search_tests {
     #[test]
     fn case_insensitive_search() {
         let search_config = SearchConfig {
-            query: "is", 
+            queries: vec!("is"), 
             files: vec!("res/test/haiku.txt"),
             case_sensitive: false,
             invert_match: false,
@@ -41,7 +41,7 @@ mod search_tests {
     #[test]
     fn invert_match_search() {
         let search_config = SearchConfig {
-            query: "dew", 
+            queries: vec!("dew"), 
             files: vec!("res/test/haiku.txt"),
             case_sensitive: false,
             invert_match: true,
@@ -55,7 +55,7 @@ mod search_tests {
         assert_eq!(run(&search_config).unwrap(), output);
 
         let search_config = SearchConfig {
-            query: "a", 
+            queries: vec!("a"), 
             files: vec!("res/test/haiku.txt"),
             case_sensitive: true,
             invert_match: true,
@@ -69,7 +69,7 @@ mod search_tests {
         assert_eq!(run(&search_config).unwrap(), output);
 
         let search_config = SearchConfig {
-            query: "test", 
+            queries: vec!("test"), 
             files: vec!("res/test/haiku.txt"),
             case_sensitive: false,
             invert_match: true,

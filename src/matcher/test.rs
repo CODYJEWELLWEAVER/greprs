@@ -6,7 +6,7 @@ mod matcher_tests{
     #[test]
     fn basic_match_test() {
         let search_config = SearchConfig{
-            query: "This",
+            queries: vec!("This"),
             files: vec!("res/test/haiku.txt"),
             case_sensitive: true,
             invert_match: false,
@@ -20,7 +20,7 @@ mod matcher_tests{
     #[test]
     fn case_insensitive_match_test() {
         let search_config = SearchConfig{
-            query: "Hello",
+            queries: vec!("Hello"),
             files: vec!("res/test/poem.txt"),
             case_sensitive: false,
             invert_match: false,

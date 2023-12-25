@@ -19,7 +19,7 @@ pub struct Config<'a> {
 
 // Wraps search arguments.
 pub struct SearchArgs<'a> {
-    pub query: &'a str,
+    pub queries: Vec<&'a str>,
     pub files: Vec<&'a str>,
 }
 

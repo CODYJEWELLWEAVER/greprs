@@ -1,6 +1,3 @@
-// Name of case sensitivity variable. Set with export CASE_INSENSITIVE=(0 or 1)
-pub const CASE_INSENSITIVE_VAR: &'static str = "CASE_INSENSITIVE";
-
 // GREPRS VERSION
 pub const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 pub const UNKNOWN_VERSION: &'static str = "UNKNOWN VERSION";
@@ -36,9 +33,9 @@ pub const HELP_INFORMATION_OUTPUT: &'static str
 *******************************************************************************
 Usage: 
   -Basic: $greprs <query> <path/to/file>
-  -Basic w/ options: $greprs <query> <path/to/file> [<option>, ...]
+  -Basic w/ options: $greprs <query> [<path/to/file>, ...] [<option>, ...]
   -Alt: $greprs <query> in <path/to/file>
-  -Alt w/ options: $greprs <query> in <path/to/file> with [<option>, ...]
+  -Alt w/ options: $greprs <query> in [<path/to/file>, ...] [<option>, ...]
 *******************************************************************************
 Help:
   -Documentation: $greprs help

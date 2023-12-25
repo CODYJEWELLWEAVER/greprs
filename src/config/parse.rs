@@ -81,38 +81,46 @@ fn match_option_type(arg: & str) -> OptionType {
 // Parses input args for query and content arguments
 // Returns Err(msg) on failure and SearchArgs on success.
 pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
+    
+    let mut queries: Vec<&str> = Vec::new();
     let mut files: Vec<&str> = Vec::new();
-    if args[2] != "in".to_string() {
-        let query: &str = &args[1];
-        // Check for files in &args
-        for arg in &args[2..] {
-            if !arg.starts_with('-') {
-                files.push(arg);
+    
+    // Check first argument for an option
+    // Otherwise add it to queries
+    if !args[1].starts_with("-") {
+        // remove query indicator
+        if args[1].starts_with("q:") {
+            // check if first arg was a query
+            // 'q',':' are both 1 byte, so 
+            // slicing the first two bytes off
+            // is eq. to cutting off 'q:'
+            if args[1].len() > 2 {
+                queries.push(&args[1][2..]);
             }
-        }
-
-        if query.is_empty() || files.is_empty() {
-            return Err(
-                "Error parsing query and content args. Run 'greprs help' for detailed information."
-            )
         } else {
-            return Ok(SearchArgs{query, files})
+            queries.push(&args[1]);
         }
     }
-    else {
-        // Define query arguments using <query> in [<files>, ...] syntax.
-        // Default for content is a filename.
-        let query: &str = &args[1];
-        for arg in &args[3..] {
-            if !arg.starts_with('-') {
+    
+    // Check for queries & files in args
+    for arg in &args[2..] {
+        if !arg.starts_with('-') {
+            if arg.starts_with("q:") {
+                if arg.len() > 2 {
+                    queries.push(&arg[2..]);
+                }
+            }
+            else {
                 files.push(arg);
             }
         }
-        
-        return if files.is_empty() {
-            Err("No file arguments!")
-        } else {
-            Ok(SearchArgs{query, files})
-        }
+    }
+
+    return if queries.is_empty() || files.is_empty() {
+        Err(
+            "Error parsing query and file args. Run 'greprs help' for detailed information."
+        )
+    } else {
+        Ok(SearchArgs{queries, files})
     }
 }

@@ -24,7 +24,7 @@ impl Output<'_> {
     ) -> Output<'a> {
         return Output {
             search_config,
-            output_lines: output_lines,
+            output_lines,
             output_type
         }
     }
@@ -57,7 +57,7 @@ fn print_output(lines: &Vec<Box<String>>) {
 
 /* Print Search Configuration Details */
 fn print_search_config(search_config: &SearchConfig) {
-    println!("Searching for: '{}'", search_config.query);
+    println!("Searching for: '{:?}'", search_config.queries);
     print!("In: ");
     for file_name in &search_config.files[..] {
         print!("<{}> ", file_name);

@@ -13,7 +13,8 @@ pub fn run<'a>(
     search_config: &'a SearchConfig<'a>
 ) -> Result<Output<'_>, Box<dyn Error>> {
     let open_files: Vec<OpenFile> = open_files(&search_config.files)?;
-    let num_files = &search_config.files.len();
+    let num_files = search_config.files.len();
+    let mut did_file_match: bool = false;
 
     let mut search_results = Vec::new();
     let match_pattern = matcher::MatchPattern::new(search_config)?;
@@ -21,6 +22,7 @@ pub fn run<'a>(
     for file in open_files {
         for line in file.contents.lines() {
             if match_pattern.matches(line) {
+                did_file_match = true;
                 // Moves output lines to heap to be returned
                 let boxed_line_string = match num_files {
                     1 => {
@@ -36,9 +38,10 @@ pub fn run<'a>(
                 search_results.push(boxed_line_string);
             }
         }
-        if *(num_files) > 1 {
+        if num_files > 1 && did_file_match {
             // add file output separator
-            search_results.push(Box::new("\n".to_string()))
+            search_results.push(Box::new("".to_string()));
+            did_file_match = false;
         }
     }
 
@@ -74,7 +77,7 @@ impl OpenFile<'_> {
 }
 
 fn open_files<'a>(files: &'a Vec<& str>) 
--> Result<Vec<OpenFile<'a>>, Box<dyn Error>> {
+        -> Result<Vec<OpenFile<'a>>, Box<dyn Error>> {
     let mut stderr = std::io::stderr();
 
     let mut open_files: Vec<OpenFile> = Vec::new();
