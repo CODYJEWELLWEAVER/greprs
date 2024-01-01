@@ -33,12 +33,13 @@ pub const ERR_MSG_NO_OPEN_FILES: &'static str = "Could not open any files!";
 pub const HELP_INFORMATION_OUTPUT: &'static str
 = "Welcome to greprs:
 *******************************************************************************
-Usage: 
-  -Basic: $greprs <query> <path/to/file>
-  -Basic w/ options: $greprs <query> [<path/to/file>,...] [<option>,...]
-  -Alt: $greprs q:<query> <path/to/file>
-  -Alt w/ options: $greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
+* Usage: 
+*   Basic: $greprs <query> <path/to/file>
+*   Basic w/ options: $greprs <query> [<path/to/file>,...] [<option>,...]
+*   Alt: $greprs [q:<query>,...] [<path/to/file>,...]
+*   Alt w/ options: $greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
 *******************************************************************************
-Help:
-  -Documentation: $greprs help
-  -Version Info: $greprs version";
+* Help:
+*   Documentation: $greprs help
+*   Version Info: $greprs version
+*******************************************************************************";
