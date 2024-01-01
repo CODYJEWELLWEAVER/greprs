@@ -3,6 +3,7 @@ mod search_tests {
     use crate::config::search_config::SearchConfig;
     use crate::output::{OutputType, Output};
     use crate::search::run;
+    use std::collections::HashMap;
 
     #[test]
     fn case_sensitive_search() {
@@ -13,9 +14,11 @@ mod search_tests {
             invert_match: false,
             count_output: false,
         };
+        let mut output_content = HashMap::new();
+        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("is a world of dew,".to_owned()), Box::new("and yet, and yet.".to_owned())));
         let output = Output::new(
             Some(&search_config),
-            vec!(Box::new("is a world of dew,".to_owned()), Box::new("and yet, and yet.".to_owned())),
+            output_content,
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
@@ -30,9 +33,11 @@ mod search_tests {
             invert_match: false,
             count_output: false,
         };
+        let mut output_content = HashMap::new(); 
+        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_owned()),Box::new("is a world of dew,".to_owned())));
         let output = Output::new(
             Some(&search_config),
-            vec!(Box::new("This world of dew".to_string()), Box::new("is a world of dew,".to_string())),
+            output_content,
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
@@ -47,9 +52,11 @@ mod search_tests {
             invert_match: true,
             count_output: false,
         };
+        let mut output_content = HashMap::new();
+        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("and yet, and yet.".to_owned())));
         let output = Output::new(
             Some(&search_config),
-            vec!(Box::new("and yet, and yet.".to_string())),
+            output_content,
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
@@ -61,9 +68,11 @@ mod search_tests {
             invert_match: true,
             count_output: false,
         };
+        let mut output_content = HashMap::new();
+        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_string())));
         let output = Output::new(
             Some(&search_config),
-            vec!(Box::new("This world of dew".to_string())),
+            output_content,
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);
@@ -75,11 +84,13 @@ mod search_tests {
             invert_match: true,
             count_output: false,
         };
+        let mut output_content = HashMap::new();
+        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_string()),
+        Box::new("is a world of dew,".to_string()),
+        Box::new("and yet, and yet.".to_string())));
         let output = Output::new(
             Some(&search_config),
-            vec!(Box::new("This world of dew".to_string()),
-                                Box::new("is a world of dew,".to_string()),
-                                Box::new("and yet, and yet.".to_string())),
+            output_content,
             OutputType::Search
         );
         assert_eq!(run(&search_config).unwrap(), output);

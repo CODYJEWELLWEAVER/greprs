@@ -17,12 +17,17 @@ pub struct Config<'a> {
     pub info_config: Option<InfoConfig>
 }
 
-// Wraps search arguments.
+/**
+Wraps search arguments.
+*/
 pub struct SearchArgs<'a> {
-    pub queries: Vec<&'a str>,
     pub files: Vec<&'a str>,
+    pub queries: Vec<&'a str>,
 }
 
+/**
+Encodes cli option types
+ */
 #[derive(Debug)]
 #[derive(PartialEq, Eq, Hash)]
 pub enum OptionType {
@@ -32,22 +37,28 @@ pub enum OptionType {
     Unknown,
 }
 
-// Wraps option args and their associated values.
+/**
+Wraps option args and their associated values.
+*/
 pub struct OptionArgs<'a> {
     pub options: HashMap<OptionType, Vec<&'a str>>
 }
 
-// Defines configurations for info::run()
+/**
+Defines configurations for info::run()
+*/
 pub enum InfoConfig {
-    HELP,
-    VERSION,
+    Help,
+    Version,
 }
 
 impl Config<'_> {
-    // Constructor for command line args.
-    // Parses cl args and queries enviroment variables.
-    // Param: cl args: &[Strings]
-    // Return: Result<config: Config, errMsg: &'static str>
+    /**
+    Constructor for command line args.
+    Parses cl args and queries enviroment variables.
+    * param: cl args: &\[Strings\]
+    * return: Result<config: Config, errMsg: &'static str>
+    */
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
             if args.len() == 2 { // Check for a help option
@@ -58,13 +69,13 @@ impl Config<'_> {
                     _ if &args[1] == &help_option => {
                         Ok(Config {
                             search_config: None, 
-                            info_config: Some(InfoConfig::HELP)
+                            info_config: Some(InfoConfig::Help)
                         })
                     },
                     _ if &args[1] == &version_option => {
                         Ok(Config {
                             search_config: None, 
-                            info_config: Some(InfoConfig::VERSION)
+                            info_config: Some(InfoConfig::Version)
                         })
                     },
                     _ => {

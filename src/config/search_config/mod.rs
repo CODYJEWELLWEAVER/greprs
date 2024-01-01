@@ -6,6 +6,15 @@ use super::OptionArgs;
 
 mod test;
 
+/**
+Contains neccessary information to run search
+* queries: patterns and strings to search files with\
+* files: names of files to search
+* case_sensitive: false if search should ignore case
+* invert_match: true if should invert matching
+* count_output: true if normal output should be replaced with 
+count of matching lines in each file.
+ */
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub struct SearchConfig<'a> {
@@ -17,6 +26,7 @@ pub struct SearchConfig<'a> {
 }
 
 impl SearchConfig<'_> {
+    /** SearchConfig Constructor */
     pub fn new<'a>(
         search_args: SearchArgs<'a>, 
         option_args: OptionArgs

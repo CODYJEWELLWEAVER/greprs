@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::ops::{RangeBounds, Bound};
 use crate::config::OptionArgs;
 use crate::config::SearchArgs;
 use crate::consts::COUNT_OUTPUT_OPTION_0;
@@ -24,9 +25,10 @@ mod test {
     }
 }
 
-// Parses input args and maps option markups with
-// their respective values. Option args are then passed into
-// SearchConfig, OutputConfig, etc..
+/**
+Parses option arguments and additional values that may be passed in 
+to options.
+*/
 pub fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static str> {
     let mut options: HashMap<OptionType, Vec<&'a str>> = HashMap::new();
     
@@ -61,6 +63,10 @@ pub fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static s
     Ok(OptionArgs{ options })
 }
 
+/**
+ Returns a OptionType that corresponds to a given option 
+ argument string, or OptionType::Unknown for invalid option args.
+ */
 fn match_option_type(arg: & str) -> OptionType {
     return match arg {
         // Simple options (no additional values needed)
@@ -73,13 +79,14 @@ fn match_option_type(arg: & str) -> OptionType {
         // Count output options
         COUNT_OUTPUT_OPTION_0 |
         COUNT_OUTPUT_OPTION_1 => OptionType::CountOutput,
-        // Value options (additional values needed)
         _ => OptionType::Unknown,
     }
 }
 
-// Parses input args for query and content arguments
-// Returns Err(msg) on failure and SearchArgs on success.
+/**
+Parses input args for query and content arguments
+* returns: Err(msg) on failure and SearchArgs on success.
+*/
 pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
     
     let mut queries: Vec<&str> = Vec::new();
@@ -89,14 +96,8 @@ pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static s
     // Otherwise add it to queries
     if !args[1].starts_with("-") {
         // remove query indicator
-        if args[1].starts_with("q:") {
-            // check if first arg was a query
-            // 'q',':' are both 1 byte, so 
-            // slicing the first two bytes off
-            // is eq. to cutting off 'q:'
-            if args[1].len() > 2 {
-                queries.push(&args[1][2..]);
-            }
+        if args[1].starts_with("q:") && args[1].len() > 2{
+            queries.push(&args[1].slice(2..));
         } else {
             queries.push(&args[1]);
         }
@@ -105,10 +106,8 @@ pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static s
     // Check for queries & files in args
     for arg in &args[2..] {
         if !arg.starts_with('-') {
-            if arg.starts_with("q:") {
-                if arg.len() > 2 {
-                    queries.push(&arg[2..]);
-                }
+            if arg.starts_with("q:") && arg.len() > 2 {
+                queries.push(&arg.slice(2..));
             }
             else {
                 files.push(arg);
@@ -122,5 +121,53 @@ pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static s
         )
     } else {
         Ok(SearchArgs{queries, files})
+    }
+}
+
+/**
+ * String slice utitily function. 
+ * Credit to carlomilanesi: https://users.rust-lang.org/t/how-to-get-a-substring-of-a-string/1351/11
+ */
+trait StringUtils {
+    fn substring(&self, start: usize, length: usize) -> &str;
+    fn slice(&self, range: impl RangeBounds<usize>) -> &str;
+}
+
+impl StringUtils for str {
+    fn substring(&self, start: usize, length: usize) -> &str {
+        let mut char_pos = 0;
+        let mut byte_start = 0;
+        let mut it = self.chars();
+        loop {
+            if char_pos == start { break; }
+            if let Some(c) = it.next() {
+                char_pos += 1;
+                byte_start += c.len_utf8();
+            }
+            else { break; }
+        }
+        char_pos = 0;
+        let mut byte_end = byte_start;
+        loop {
+            if char_pos == length { break; }
+            if let Some(c) = it.next() {
+                char_pos += 1;
+                byte_end += c.len_utf8();
+            }
+            else { break; }
+        }
+        &self[byte_start..byte_end]
+    }
+    fn slice(&self, range: impl RangeBounds<usize>) -> &str {
+        let start = match range.start_bound() {
+            Bound::Included(bound) | Bound::Excluded(bound) => *bound,
+            Bound::Unbounded => 0
+        };
+        let len = match range.end_bound() {
+            Bound::Included(bound) => *bound + 1,
+            Bound::Excluded(bound) => *bound,
+            Bound::Unbounded => self.len(),
+        } - start;
+        self.substring(start, len)
     }
 }

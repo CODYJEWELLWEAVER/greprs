@@ -27,9 +27,9 @@ pub const ERR_MSG_STD_ERR_WRITE: &'static str = "Could not write to std err!";
 pub const ERR_MSG_NO_SEARCH_CFG: &'static str = "No search configuration! Exiting...";
 pub const ERR_MSG_NO_OPEN_FILES: &'static str = "Could not open any files!";
 
-// HELP INFORMATION OUTPUT
-///////////////////////////
-// Output of '$greprs help'
+/**
+* HELP OUTPUT STRING - Output of '$greprs help'
+*/
 pub const HELP_INFORMATION_OUTPUT: &'static str
 = "Welcome to greprs:
 *******************************************************************************

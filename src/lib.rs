@@ -1,6 +1,5 @@
 use std::error::Error;
 
-// Define modules to expose.
 pub mod config;
 pub mod consts;
 
@@ -13,9 +12,11 @@ mod search;
 mod info;
 mod output;
 
-// Run greprs
-// Param: config : Config - user specified configuration.
-// Return: () On success - Error implementing class on failure.
+/**
+Run greprs
+* param: config : Config - user specified configuration.
+* return: () On success - Error implementing class on failure.
+*/
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let info_config: Option<InfoConfig> = config.info_config;
 

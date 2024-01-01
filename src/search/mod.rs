@@ -2,47 +2,39 @@ use crate::config::search_config::SearchConfig;
 use crate::{matcher, consts};
 use crate::output::{Output, OutputType};
 use std::error::Error;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Write, self};
 
 mod test;
 
-// Runs the search given the config parameter
-// and returns the output list.
+const NO_OPEN_FILES: usize = 0;
+
+/**
+Runs the search given the config parameter
+and returns the output list.
+* param: &SearchConfig - search config parsed from cli args
+* return: output of search on success, boxed error on failure
+*/
 pub fn run<'a>(
     search_config: &'a SearchConfig<'a>
 ) -> Result<Output<'_>, Box<dyn Error>> {
     let open_files: Vec<OpenFile> = open_files(&search_config.files)?;
-    let num_files = search_config.files.len();
-    let mut did_file_match: bool = false;
 
-    let mut search_results = Vec::new();
+    let mut output_content = HashMap::new();
+
     let match_pattern = matcher::MatchPattern::new(search_config)?;
 
     for file in open_files {
+        let mut search_results = Vec::new();
         for line in file.contents.lines() {
             if match_pattern.matches(line) {
-                did_file_match = true;
                 // Moves output lines to heap to be returned
-                let boxed_line_string = match num_files {
-                    1 => {
-                        Box::new(line.to_string())
-                    },
-                    _ => {
-                        // Append file name to output when searching more 
-                        // than one file.
-                        Box::new(String::from(format!("<{}>\t", file.name)) + &line)
-                    }
-                };
-
+                let boxed_line_string = Box::new(line.to_string());
                 search_results.push(boxed_line_string);
             }
         }
-        if num_files > 1 && did_file_match {
-            // add file output separator
-            search_results.push(Box::new("".to_string()));
-            did_file_match = false;
-        }
+        output_content.insert(file.name.to_string(), search_results);
     }
 
     let output_type = if search_config.count_output {
@@ -54,20 +46,23 @@ pub fn run<'a>(
 
     let search_output = Output::new(
         Some(&search_config),
-        search_results,
+        output_content,
         output_type
     );
 
     Ok(search_output)
 }
 
-// Associates a content string with a file name
+/**
+Associates a content string with a file name
+*/
 struct OpenFile<'a> {
     name: &'a str,
     contents: String
 }
 
 impl OpenFile<'_> {
+    /** creates new OpenFile */
     pub fn new(name: &str, contents: String) -> OpenFile<'_> {
         return OpenFile {
             name,
@@ -76,6 +71,15 @@ impl OpenFile<'_> {
     }
 }
 
+/**
+Given a vector of file names, attempts to open them and returns 
+OpenFile objects corresponding to each successfully opened file.
+* note: Wont return an error if some file names passed are invalid if at least 
+one file name is valid. If a file cannot be opened and stderr cannot be written to 
+will return an error.
+* param: &Vec<& str> Vector of file names.
+* return: Vector of OpenFile objects or error
+ */
 fn open_files<'a>(files: &'a Vec<& str>) 
         -> Result<Vec<OpenFile<'a>>, Box<dyn Error>> {
     let mut stderr = std::io::stderr();
@@ -105,7 +109,8 @@ fn open_files<'a>(files: &'a Vec<& str>)
     }
 
     return match open_files.len() {
-        0 => {
+        NO_OPEN_FILES => {
+            // return error if no file names are valid
             Err(Box::from(consts::ERR_MSG_NO_OPEN_FILES))
         },
         _ => {
