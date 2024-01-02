@@ -1,8 +1,6 @@
-use std::collections::HashMap;
 use std::ops::{RangeBounds, Bound};
-use crate::config::OptionArgs;
 use crate::config::SearchArgs;
-use crate::consts::COUNT_OUTPUT_OPTION_0;
+use crate::consts::{COUNT_OUTPUT_OPTION_0, WORD_MATCH_OPTION_0, WORD_MATCH_OPTION_1};
 use crate::consts::COUNT_OUTPUT_OPTION_1;
 use crate::consts::{ CASE_INSENSITIVE_OPTION_0, INVERT_MATCH_OPTION_0, INVERT_MATCH_OPTION_1,
 CASE_INSENSITIVE_OPTION_1 };
@@ -19,9 +17,15 @@ mod test {
     fn parse_options() {
         let test_args = ["-i".to_string(),];
         let option_args = parse_option_args(&test_args).unwrap();
-        let mut map: HashMap<OptionType, Vec<& str>> = HashMap::new();
-        map.insert(OptionType::CaseInsensitive, Vec::new());
-        assert_eq!(option_args.options, map);
+        let mut options: Vec<OptionType> = Vec::new();
+        options.push(OptionType::CaseInsensitive);
+        assert_eq!(option_args, options);
+
+        let test_args = ["-i".to_string(),];
+        let option_args = parse_option_args(&test_args).unwrap();
+        let mut options: Vec<OptionType> = Vec::new();
+        options.push(OptionType::CaseInsensitive);
+        assert_eq!(option_args, options);
     }
 }
 
@@ -29,11 +33,10 @@ mod test {
 Parses option arguments and additional values that may be passed in 
 to options.
 */
-pub fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static str> {
-    let mut options: HashMap<OptionType, Vec<&'a str>> = HashMap::new();
+pub fn parse_option_args<'a>(args: &'a[String]) -> Result<Vec<OptionType>, &'static str> {
+    let mut options: Vec<OptionType> = Vec::new();
     
     for i in 0..args.len() {
-        // Parse options that take some sort of input for configuration.
         // Parse options that need no additional input for configuration.
         if args[i].starts_with("-") {
             let option_type = match_option_type(&args[i]);
@@ -45,13 +48,13 @@ pub fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static s
                     // For options that need no 
                     // values passed in adds 
                     // and empty vector to map.
-                    options.insert(option_type, Vec::new());
+                    options.push(option_type);
                 }
             };
         }
     }
 
-    Ok(OptionArgs{ options })
+    Ok( options )
 }
 
 /**
@@ -70,6 +73,9 @@ fn match_option_type(arg: & str) -> OptionType {
         // Count output options
         COUNT_OUTPUT_OPTION_0 |
         COUNT_OUTPUT_OPTION_1 => OptionType::CountOutput,
+        // Word match options 
+        WORD_MATCH_OPTION_0 |
+        WORD_MATCH_OPTION_1 => OptionType::WordMatch,
         _ => OptionType::Unknown,
     }
 }

@@ -1,13 +1,11 @@
-use std::collections::HashMap;
-
 pub mod search_config;
 mod parse;
 
 use search_config::SearchConfig;
 
-use crate::consts::ERR_MSG_USAGE_HINT;
-use crate::consts::GREPRS_HELP_OPTION;
-use crate::consts::GREPRS_VERSION_OPTION;
+use crate::consts::{ERR_MSG_USAGE_HINT, GREPRS_HELP_OPTION_0,
+GREPRS_HELP_OPTION_1, GREPRS_VERSION_OPTION_0, GREPRS_VERSION_OPTION_1 };
+
 
 /**
  * Holds configuration for greprs::run to use.
@@ -34,14 +32,8 @@ pub enum OptionType {
     CaseInsensitive,
     InvertMatch,
     CountOutput,
+    WordMatch,
     Unknown,
-}
-
-/**
-Wraps option args and their associated values.
-*/
-pub struct OptionArgs<'a> {
-    pub options: HashMap<OptionType, Vec<&'a str>>
 }
 
 /**
@@ -62,17 +54,21 @@ impl Config<'_> {
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
             if args.len() == 2 { // Check for a help option
-                let help_option = String::from(GREPRS_HELP_OPTION);
-                let version_option = String::from(GREPRS_VERSION_OPTION);
+                let help_option_0 = String::from(GREPRS_HELP_OPTION_0);
+                let help_option_1 = String::from(GREPRS_HELP_OPTION_1);
+                let version_option_0 = String::from(GREPRS_VERSION_OPTION_0);
+                let version_option_1 = String::from(GREPRS_VERSION_OPTION_1);
                 // Check if a info option is present.
                 let config = match &args[1] {
-                    _ if &args[1] == &help_option => {
+                    _ if &args[1] == &help_option_0 || 
+                         &args[1] == &help_option_1 => {
                         Ok(Config {
                             search_config: None, 
                             info_config: Some(InfoConfig::Help)
                         })
                     },
-                    _ if &args[1] == &version_option => {
+                    _ if &args[1] == &version_option_0 ||
+                         &args[1] == &version_option_1 => {
                         Ok(Config {
                             search_config: None, 
                             info_config: Some(InfoConfig::Version)

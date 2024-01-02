@@ -21,11 +21,19 @@ impl MatchPattern {
         let mut patterns: Vec<Regex> = Vec::new();
 
         for query in &search_config.queries {
-            let query_string: String = if search_config.case_sensitive {
-                format!(r"{}", query)
+            // apply word matching
+            let query_string: String = if search_config.word_match {
+                format!(r"\b{}\b", query)
             } else {
-                format!(r"(?i){}", query)
+                format!(r"{}", query)
             };
+            // apply case insensitive flag
+            let query_string: String = if !search_config.case_sensitive {
+                format!(r"(?i){}", query_string)
+            } else {
+                query_string
+            };
+
             let regex = Regex::new(&query_string)?;
             patterns.push(regex);
         }

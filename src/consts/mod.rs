@@ -5,15 +5,20 @@ pub const UNKNOWN_VERSION: &'static str = "UNKNOWN VERSION";
 // CASE SENSITIVITY OPTIONS
 pub const CASE_INSENSITIVE_OPTION_0: &'static str = "--ignore-case";
 pub const CASE_INSENSITIVE_OPTION_1: &'static str = "-i";
-pub const CASE_SENSITIVE_OPTION_0: &'static str = "--no-ignore-case";
 
 // INFORMATION OPTIONS
-pub const GREPRS_HELP_OPTION: &'static str = "help";
-pub const GREPRS_VERSION_OPTION: &'static str = "version";
+pub const GREPRS_HELP_OPTION_0: &'static str = "help";
+pub const GREPRS_HELP_OPTION_1: &'static str = "--help";
+pub const GREPRS_VERSION_OPTION_0: &'static str = "version";
+pub const GREPRS_VERSION_OPTION_1: &'static str = "--version";
 
 // INVERT MATCH OPTIONS
 pub const INVERT_MATCH_OPTION_0: &'static str = "-v";
 pub const INVERT_MATCH_OPTION_1: &'static str = "--invert-match";
+
+// WORD MATCH OPTIONS
+pub const WORD_MATCH_OPTION_0: &'static str = "-w";
+pub const WORD_MATCH_OPTION_1: &'static str = "--word-match";
 
 // COUNT OUTPUT LINE OPTIONS
 pub const COUNT_OUTPUT_OPTION_0: &'static str = "-c";
@@ -40,6 +45,6 @@ pub const HELP_INFORMATION_OUTPUT: &'static str
 *   Alt w/ options: $greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
 *******************************************************************************
 * Help:
-*   Documentation: $greprs help
-*   Version Info: $greprs version
+*   Documentation: $greprs help or $greprs --help
+*   Version Info: $greprs version or $greprs --version
 *******************************************************************************";

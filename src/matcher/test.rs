@@ -11,6 +11,7 @@ mod matcher_tests{
             case_sensitive: true,
             invert_match: false,
             count_output: false,
+            word_match: false,
         };
         let match_pattern = MatchPattern::new(&search_config).expect("basic_match_test panicked!");
         assert!(match_pattern.matches("This world of dew"));
@@ -25,6 +26,7 @@ mod matcher_tests{
             case_sensitive: false,
             invert_match: false,
             count_output: false,
+            word_match: false,
         };
         let match_pattern = MatchPattern::new(&search_config).expect("case_insensitive_match_test panicked!");
         assert!(match_pattern.matches("I am not here, hello!"));
