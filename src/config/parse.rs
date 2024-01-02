@@ -34,17 +34,8 @@ pub fn parse_option_args<'a>(args: &'a[String]) -> Result<OptionArgs, &'static s
     
     for i in 0..args.len() {
         // Parse options that take some sort of input for configuration.
-        if args[i].starts_with("--") {
-            if i == args.len() - 1 {
-                return Err("Cannot parse options, run 'greprs help' for usage help.")
-            }
-            let mut option_values: Vec<& str> = Vec::new();
-            option_values.push(&args[i+1]);
-            // TODO: ADD OPTIONS THAT REQUIRE INPUT
-            
-        }
         // Parse options that need no additional input for configuration.
-        else if args[i].starts_with("-") {
+        if args[i].starts_with("-") {
             let option_type = match_option_type(&args[i]);
             match option_type {
                 OptionType::Unknown => {

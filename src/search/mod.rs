@@ -34,6 +34,7 @@ pub fn run<'a>(
                 search_results.push(boxed_line_string);
             }
         }
+        
         output_content.insert(file.name.to_string(), search_results);
     }
 
