@@ -2,7 +2,8 @@
 [![Rust](https://github.com/CODYJEWELLWEAVER/greprs/actions/workflows/rust.yml/badge.svg)](https://github.com/CODYJEWELLWEAVER/greprs/actions/workflows/rust.yml) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://opensource.org/licenses/) 
 
 ---
-Implementation of grep using rust. I decided it would be fun to try to fully implement the functionality of grep using Rust. As of v0.2.0, greprs supports basic string and pattern searches of multiple files and currently supports the options: case-sensitive, invert match, and output line counting. You can find more information about the original grep [here](https://www.gnu.org/software/grep/).
+Implementation of grep using rust. I decided it would be fun to try to fully implement the functionality of grep using Rust. As of v0.2.0, greprs supports basic string and pattern searches of multiple files and currently supports the options: case-sensitive, invert match, and output line counting. You can find more information about the original grep [here](https://www.gnu.org/software/grep/). You can find the 
+development branch [here](https://github.com/CODYJEWELLWEAVER/greprs/tree/v0.3.0).
 
 ### Documentation
 ##### Build and Install (Linux)
