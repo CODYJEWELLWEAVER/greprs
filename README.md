@@ -1,7 +1,6 @@
-# greprs v0.2.0
+# greprs v0.3.0
 [![Rust](https://github.com/CODYJEWELLWEAVER/greprs/actions/workflows/rust.yml/badge.svg)](https://github.com/CODYJEWELLWEAVER/greprs/actions/workflows/rust.yml) [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://opensource.org/licenses/) 
 
----
 Implementation of grep using rust. I decided it would be fun to try to fully implement the functionality of grep using Rust. As of v0.2.0, greprs supports basic string and pattern searches of multiple files and currently supports the options: case-sensitive, invert match, and output line counting. You can find more information about the original grep [here](https://www.gnu.org/software/grep/). You can find the 
 development branch [here](https://github.com/CODYJEWELLWEAVER/greprs/tree/v0.3.0).
 
@@ -14,7 +13,6 @@ cd greprs
 cargo build & cargo test
 ```
 
-
 You can install the binary to your path by using 
 ```bash
 cargo install --path <path/to/greprs>
@@ -23,15 +21,22 @@ cargo install --path <path/to/greprs>
 ##### Usage
 greprs can be run using the following syntax
 ```bash
-greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
+greprs [-q:<query>,...] [<path/to/file>,...] [<option>,...]
 ```
 You can use the following for single query searches
 ```bash
 greprs query [<path/to/file>,...] [<options>,...]
 ```
+Note that to use this syntax the query should be before all files and options.
+
+You can specify multiple queries with the following notations
+```bash
+-q:<query> -q:<query> ... or -q:<query>:<query>:...
+```
+
 ###### Usage Example
 ```bash
-greprs q:is q:Thee res/test/*
+greprs -q:is -q:Thee res/test/*
 Searching for: ["is", "Thee"]
 In: <res/test/haiku.txt> <res/test/poem.txt> 
 
@@ -47,13 +52,17 @@ In: <res/test/haiku.txt> <res/test/poem.txt>
 ##### Info Options
 ###### Help Message
 ```bash
-greprs help
+greprs help 
+# or
+greprs --help
 ```
 *Displays help message to user.*
 
 ###### Version Info
 ```bash
 greprs version
+# or
+greprs --version
 ```
 *Prints greprs version.*
 
@@ -65,11 +74,6 @@ greprs version
 ```bash
 --ignore-case
 ```
-*Ignores case when matching patterns.*
-```bash
---no-ignore-case
-```
-*Does not ignore case when matching. (default)*
 
 ###### Invert Matching
 ```bash
@@ -79,6 +83,15 @@ greprs version
 --invert-match
 ```
 *Reverses matching logic, lines that do not match any patterns will match. (off by default)*
+
+###### Word Matching
+```bash
+-w
+```
+```bash
+--word-match
+```
+*Patterns only match when they form whole words, i.e. they are surrounded with word boundaries.*
 
 ##### Output Options
 ###### Count Matching Lines

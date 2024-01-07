@@ -13,6 +13,7 @@ mod search_tests {
             case_sensitive: true,
             invert_match: false,
             count_output: false,
+            word_match: false,
         };
         let mut output_content = HashMap::new();
         output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("is a world of dew,".to_owned()), Box::new("and yet, and yet.".to_owned())));
@@ -32,6 +33,7 @@ mod search_tests {
             case_sensitive: false,
             invert_match: false,
             count_output: false,
+            word_match: false,
         };
         let mut output_content = HashMap::new(); 
         output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_owned()),Box::new("is a world of dew,".to_owned())));
@@ -51,6 +53,7 @@ mod search_tests {
             case_sensitive: false,
             invert_match: true,
             count_output: false,
+            word_match: false,
         };
         let mut output_content = HashMap::new();
         output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("and yet, and yet.".to_owned())));
@@ -67,6 +70,7 @@ mod search_tests {
             case_sensitive: true,
             invert_match: true,
             count_output: false,
+            word_match: false,
         };
         let mut output_content = HashMap::new();
         output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_string())));
@@ -83,6 +87,7 @@ mod search_tests {
             case_sensitive: false,
             invert_match: true,
             count_output: false,
+            word_match: false,
         };
         let mut output_content = HashMap::new();
         output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_string()),

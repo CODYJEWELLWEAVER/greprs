@@ -1,5 +1,7 @@
+use std::error;
 use regex::Regex;
-use crate::SearchConfig;
+use crate::{SearchConfig, consts};
+
 
 mod test;
 
@@ -11,42 +13,51 @@ mod test;
  */
 pub struct MatchPattern {
     pub patterns: Vec<Regex>,
-    pub invert: bool
+    pub invert_match: bool
 }
 
 impl MatchPattern {
     /** MatchPattern Constructor */
     pub fn new(search_config: &SearchConfig) 
-                -> Result<MatchPattern, regex::Error> {
-        let mut patterns: Vec<Regex> = Vec::new();
+                -> Result<MatchPattern, Box<dyn error::Error>> {
+        let mut query_string: String = String::new();
+        let patterns: Vec<Regex> 
+            = search_config.queries.iter()
+                .filter_map( |query| 
+                    {
+                        query_string = if search_config.word_match {
+                            format!(r"\b{}\b", query)
+                        } else {
+                            format!(r"{}", query)
+                        };
+                        if !search_config.case_sensitive {
+                            query_string = format!(r"(?i){}", query_string)
+                        }
 
-        for query in &search_config.queries {
-            let query_string: String = if search_config.case_sensitive {
-                format!(r"{}", query)
-            } else {
-                format!(r"(?i){}", query)
-            };
-            let regex = Regex::new(&query_string)?;
-            patterns.push(regex);
+                        Regex::new(&query_string).ok()
+                    }
+                )
+                .collect::<Vec<Regex>>();
+
+        if patterns.is_empty() {
+            Err(
+                Box::from(consts::ERR_MSG_NO_VALID_PATTERNS)
+            )
+        } else {
+            Ok(
+                MatchPattern { 
+                    patterns, 
+                    invert_match: search_config.invert_match
+                }
+            )
         }
-
-        Ok(
-            MatchPattern { 
-                patterns, 
-                invert: search_config.invert_match
-            }
-        )
     }
 
     /** Checks if a given line matches with any pattern */
     pub fn matches(&self, line: &str) -> bool {
-        // Check every pattern with each line
-        for pattern in &self.patterns {
-            if pattern.is_match(line) != self.invert {
-                return true;
-            }
-        }
-
-        return false;
+        return self.patterns.iter()
+            .filter(|pattern| (pattern.is_match(line) != self.invert_match))
+            .collect::<Vec<&Regex>>()
+            .len() != 0usize;
    }
 }
