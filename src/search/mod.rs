@@ -17,13 +17,13 @@ and returns the output list.
 * return: output of search on success, boxed error on failure
 */
 pub fn run<'a>(
-    search_config: &'a SearchConfig<'a>
+    search_config: SearchConfig<'a>
 ) -> Result<Output<'_>, Box<dyn Error>> {
     let open_files: Vec<OpenFile> = open_files(&search_config.files)?;
 
     let mut output_content = HashMap::new();
 
-    let match_pattern = matcher::MatchPattern::new(search_config)?;
+    let match_pattern = matcher::MatchPattern::new(&search_config)?;
 
     open_files.iter().for_each(|file| {
         let mut search_results = Vec::new();
@@ -31,8 +31,8 @@ pub fn run<'a>(
         file.contents.lines().for_each(|line| {
             if match_pattern.matches(line) {
                 // Moves output lines to heap to be returned
-                let boxed_line_string = Box::new(line.to_string());
-                search_results.push(boxed_line_string);
+                // let boxed_line_string = Box::new(line.to_string());
+                search_results.push(line.to_string());
             }
         });
 
@@ -48,7 +48,7 @@ pub fn run<'a>(
     };
 
     let search_output = Output::new(
-        Some(&search_config),
+        Some(search_config),
         output_content,
         output_type
     );

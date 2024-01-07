@@ -14,11 +14,11 @@ static VERSION_KEY: &str = "version";
  */
 pub fn run(info_config: InfoConfig) -> Output<'static> {
     let mut output_content = HashMap::new();
-    let output_lines: Vec<Box<String>> = match info_config {
+    let output_lines: Vec<String> = match info_config {
         InfoConfig::Help => {
             let help_output = consts::HELP_INFORMATION_OUTPUT;
 
-            vec!(Box::new(help_output.to_string()))
+            vec!(help_output.to_string())
         },
         InfoConfig::Version => {
             let version_output: &str = match consts::VERSION {
@@ -26,7 +26,7 @@ pub fn run(info_config: InfoConfig) -> Output<'static> {
                 None => {consts::UNKNOWN_VERSION}
             };
 
-            vec!(Box::new(version_output.to_string()))
+            vec!(version_output.to_string())
         }
     };
 

@@ -11,8 +11,8 @@ Contains output information for a run of greprs
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub struct Output<'a> {
-    pub search_config: Option<&'a SearchConfig<'a>>,
-    pub output_content: HashMap<String, Vec<Box<String>>>,
+    pub search_config: Option<SearchConfig<'a>>,
+    pub output_content: HashMap<String, Vec<String>>,
     pub output_type: OutputType
 }
 
@@ -33,8 +33,8 @@ pub enum OutputType {
 impl Output<'_> {
     /** Output Constructor */
     pub fn new<'a>(
-        search_config: Option<&'a SearchConfig<'a>>,
-        output_content: HashMap<String, Vec<Box<String>>>,
+        search_config: Option<SearchConfig<'a>>,
+        output_content: HashMap<String, Vec<String>>,
         output_type: OutputType
     ) -> Output<'a> {
         return Output {
@@ -55,7 +55,7 @@ impl Output<'_> {
             OutputType::Search |
             OutputType::SearchCount => {
                 if let Some(cfg) = self.search_config {
-                    print_search_config(cfg);
+                    print_search_config(&cfg);
                 }
                 let count_lines: bool = self.output_type == OutputType::SearchCount;
                 print_output(&self.output_content, count_lines);
@@ -72,7 +72,7 @@ impl Output<'_> {
  * count_lines: true if -c or -count is passed in, prints output lines
  */
 fn print_output(
-    output_content: &HashMap<String, Vec<Box<String>>>,
+    output_content: &HashMap<String, Vec<String>>,
     count_lines: bool
 ) {
     let files_with_ouput = output_content.len();

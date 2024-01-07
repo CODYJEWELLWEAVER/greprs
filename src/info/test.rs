@@ -12,11 +12,11 @@ pub mod info_tests {
         let mut output_content = HashMap::new();
         let version_output = match consts::VERSION {
             Some(version_string) => {
-                output_content.insert(VERSION_KEY.to_string(), vec!(Box::new(version_string.to_string())));
+                output_content.insert(VERSION_KEY.to_string(), vec!(version_string.to_string()));
                 Output::new(None, output_content, OutputType::Info)
             },
             None => {
-                output_content.insert(HELP_KEY.to_string(), vec!(Box::new(consts::UNKNOWN_VERSION.to_string())));
+                output_content.insert(HELP_KEY.to_string(), vec!(consts::UNKNOWN_VERSION.to_string()));
                 Output::new(None, output_content, OutputType::Info)
             }
         };
