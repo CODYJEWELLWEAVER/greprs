@@ -15,6 +15,7 @@ count of matching lines in each file.
  */
 #[derive(Debug)]
 #[derive(PartialEq)]
+#[derive(Clone)]
 pub struct SearchConfig<'a> {
     pub queries: Vec<&'a str>,
     pub files: Vec<&'a str>,

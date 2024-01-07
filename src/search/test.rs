@@ -16,13 +16,13 @@ mod search_tests {
             word_match: false,
         };
         let mut output_content = HashMap::new();
-        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("is a world of dew,".to_owned()), Box::new("and yet, and yet.".to_owned())));
+        output_content.insert("res/test/haiku.txt".to_string(), vec!("is a world of dew,".to_owned(), "and yet, and yet.".to_owned()));
         let output = Output::new(
-            Some(&search_config),
+            Some(search_config.clone()),
             output_content,
             OutputType::Search
         );
-        assert_eq!(run(&search_config).unwrap(), output);
+        assert_eq!(run(search_config).unwrap(), output);
     }
 
     #[test]
@@ -36,13 +36,13 @@ mod search_tests {
             word_match: false,
         };
         let mut output_content = HashMap::new(); 
-        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_owned()),Box::new("is a world of dew,".to_owned())));
+        output_content.insert("res/test/haiku.txt".to_string(), vec!("This world of dew".to_owned(),"is a world of dew,".to_owned()));
         let output = Output::new(
-            Some(&search_config),
+            Some(search_config.clone()),
             output_content,
             OutputType::Search
         );
-        assert_eq!(run(&search_config).unwrap(), output);
+        assert_eq!(run(search_config).unwrap(), output);
     }
 
     #[test]
@@ -56,13 +56,13 @@ mod search_tests {
             word_match: false,
         };
         let mut output_content = HashMap::new();
-        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("and yet, and yet.".to_owned())));
+        output_content.insert("res/test/haiku.txt".to_string(), vec!("and yet, and yet.".to_owned()));
         let output = Output::new(
-            Some(&search_config),
+            Some(search_config.clone()),
             output_content,
             OutputType::Search
         );
-        assert_eq!(run(&search_config).unwrap(), output);
+        assert_eq!(run(search_config).unwrap(), output);
 
         let search_config = SearchConfig {
             queries: vec!("a"), 
@@ -73,13 +73,13 @@ mod search_tests {
             word_match: false,
         };
         let mut output_content = HashMap::new();
-        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_string())));
+        output_content.insert("res/test/haiku.txt".to_string(), vec!("This world of dew".to_string()));
         let output = Output::new(
-            Some(&search_config),
+            Some(search_config.clone()),
             output_content,
             OutputType::Search
         );
-        assert_eq!(run(&search_config).unwrap(), output);
+        assert_eq!(run(search_config).unwrap(), output);
 
         let search_config = SearchConfig {
             queries: vec!("test"), 
@@ -90,14 +90,18 @@ mod search_tests {
             word_match: false,
         };
         let mut output_content = HashMap::new();
-        output_content.insert("res/test/haiku.txt".to_string(), vec!(Box::new("This world of dew".to_string()),
-        Box::new("is a world of dew,".to_string()),
-        Box::new("and yet, and yet.".to_string())));
+        output_content.insert(
+            "res/test/haiku.txt".to_string(), 
+            vec!("This world of dew".to_string(),
+                "is a world of dew,".to_string(),
+                "and yet, and yet.".to_string()
+            )
+        );
         let output = Output::new(
-            Some(&search_config),
+            Some(search_config.clone()),
             output_content,
             OutputType::Search
         );
-        assert_eq!(run(&search_config).unwrap(), output);
+        assert_eq!(run(search_config).unwrap(), output);
     }
 }

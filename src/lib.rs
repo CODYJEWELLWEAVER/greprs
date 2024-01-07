@@ -37,7 +37,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         None => return Err(Box::from(consts::ERR_MSG_NO_SEARCH_CFG))
     };
 
-    let search_output: Output<'_> = search::run(&search_config)?;
+    let search_output: Output<'_> = search::run(search_config)?;
     search_output.display();
 
     Ok(())
