@@ -14,47 +14,61 @@ mod test {
     use super::*;
 
     #[test]
-    fn parse_options() {
-        let test_args = ["-i".to_string(),];
-        let option_args = parse_option_args(&test_args).unwrap();
-        let mut options: Vec<OptionType> = Vec::new();
-        options.push(OptionType::CaseInsensitive);
-        assert_eq!(option_args, options);
-
-        let test_args = ["-i".to_string(),];
-        let option_args = parse_option_args(&test_args).unwrap();
-        let mut options: Vec<OptionType> = Vec::new();
-        options.push(OptionType::CaseInsensitive);
-        assert_eq!(option_args, options);
+    fn parse_args() {
+        let args  = ["/greprs".to_string(), "in".to_string(), "res/test/haiku.txt".to_string(), "-i".to_string(), "q:hello".to_string(), "--count".to_string()];
+        let search_args = parse_arguments(&args).unwrap();
+        let expected_queries = vec!("in".to_string(), "hello".to_string());
+        let expected_files = vec!("res/test/haiku.txt".to_string());
+        let expected_options = vec!(OptionType::CaseInsensitive, OptionType::CountOutput);
+        assert_eq!(expected_files, search_args.files);
+        assert_eq!(expected_queries, search_args.queries);
+        assert_eq!(expected_options, search_args.options);
     }
 }
 
-/**
-Parses option arguments and additional values that may be passed in 
-to options.
-*/
-pub fn parse_option_args<'a>(args: &'a[String]) -> Result<Vec<OptionType>, &'static str> {
+pub fn parse_arguments<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
+    let mut queries: Vec<&str> = Vec::new();
+    let mut files: Vec<&str> = Vec::new();
     let mut options: Vec<OptionType> = Vec::new();
     
-    for i in 0..args.len() {
-        // Parse options that need no additional input for configuration.
-        if args[i].starts_with("-") {
-            let option_type = match_option_type(&args[i]);
-            match option_type {
-                OptionType::Unknown => {
-                    return Err("Unknown option parameter!")
-                }
-                _ => {
-                    // For options that need no 
-                    // values passed in adds 
-                    // and empty vector to map.
-                    options.push(option_type);
-                }
-            };
+    // Check first argument for an option
+    // Otherwise add it to queries
+    if !args[1].starts_with("-") {
+        // remove query indicator
+        if args[1].starts_with("q:") && args[1].len() > 2{
+            queries.push(&args[1].slice(2..));
+        } else {
+            queries.push(&args[1]);
         }
     }
+    
+    // Check for queries & files in args
+    (&args[2..]).into_iter().for_each(|arg| {
+        if !arg.starts_with('-') {
+            if arg.starts_with("q:") && arg.len() > 2 {
+                queries.push(&arg.slice(2..));
+            }
+            else {
+                files.push(arg);
+            }
+        } else {
+            let option_type: OptionType = match_option_type(arg);
+            if option_type != OptionType::Unknown {
+                options.push(option_type);
+            }
+        }
+    });
 
-    Ok( options )
+    if queries.is_empty() {
+        return Err("Could not find any queries in arguments!")
+    }
+    if files.is_empty() {
+        return Err("Could not find any files in arguments!")
+    }
+
+    Ok(
+        SearchArgs::new(queries, files, options)
+    )
 }
 
 /**
@@ -77,47 +91,6 @@ fn match_option_type(arg: & str) -> OptionType {
         WORD_MATCH_OPTION_0 |
         WORD_MATCH_OPTION_1 => OptionType::WordMatch,
         _ => OptionType::Unknown,
-    }
-}
-
-/**
-Parses input args for query and content arguments
-* returns: Err(msg) on failure and SearchArgs on success.
-*/
-pub fn parse_search_args<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str> {
-    
-    let mut queries: Vec<&str> = Vec::new();
-    let mut files: Vec<&str> = Vec::new();
-    
-    // Check first argument for an option
-    // Otherwise add it to queries
-    if !args[1].starts_with("-") {
-        // remove query indicator
-        if args[1].starts_with("q:") && args[1].len() > 2{
-            queries.push(&args[1].slice(2..));
-        } else {
-            queries.push(&args[1]);
-        }
-    }
-    
-    // Check for queries & files in args
-    for arg in &args[2..] {
-        if !arg.starts_with('-') {
-            if arg.starts_with("q:") && arg.len() > 2 {
-                queries.push(&arg.slice(2..));
-            }
-            else {
-                files.push(arg);
-            }
-        }
-    }
-
-    return if queries.is_empty() || files.is_empty() {
-        Err(
-            "Error parsing query and file args. Run 'greprs help' for detailed information."
-        )
-    } else {
-        Ok(SearchArgs{queries, files})
     }
 }
 

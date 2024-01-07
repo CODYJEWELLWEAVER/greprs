@@ -75,36 +75,32 @@ fn print_output(
     count_lines: bool
 ) {
     let files_with_ouput = output_content.len();
-    let file_name_keys = output_content.keys();
     let mut file_num = 0;
 
-    for file_name in file_name_keys {
-        if let Some(file_output) = output_content.get(file_name) {
-            if !count_lines {
-                // print output lines for each file
-                for file_line in file_output {
-                    if output_content.len() == 1usize {
-                        println!("{}", file_line);
-                    } else {
-                        // only show file name info when output from multiple 
-                        // files is present
-                        println!("<{}>\t{}", file_name, file_line)
-                    };
-                }
-            } else {
-                // print match counts for each file
-                println!("Matching lines in {}: {}", file_name, file_output.len());
-            }
-            if files_with_ouput > 1 && file_num < files_with_ouput - 1 {
-                // print empty lines to deliniate output for 
-                // multiple file outputs
-                if count_lines || file_output.len() > 1 {
-                    println!();
-                }
-                file_num += 1;
-            }
+    output_content.iter().for_each( |(file_name, file_output)| {
+        if !count_lines {
+            file_output.iter().for_each(|line| {
+                if output_content.len() == 1usize {
+                    println!("{}", line);
+                } else {
+                    // only show file name info when output from multiple 
+                    // files is present
+                    println!("<{}>\t{}", file_name, line);
+                };
+            });
+        } else {
+            // print match counts for each file
+            println!("Matching lines in {}: {}", file_name, file_output.len());
         }
-    }
+        if files_with_ouput > 1 && file_num < files_with_ouput - 1 {
+            // print empty lines to deliniate output for 
+            // multiple file outputs
+            if file_output.len() > 1 {
+                println!();
+            }
+            file_num += 1;
+        }
+    });
 }
 
 /** Print Search Configuration Details */
@@ -116,9 +112,9 @@ fn print_search_config(search_config: &SearchConfig) {
         println!("Searching for: {:?}", search_config.queries);
     }
     print!("In: ");
-    for file_name in &search_config.files[..] {
+    search_config.files.iter().for_each(|file_name| {
         print!("<{}> ", file_name);
-    }
+    });
     // ends files line and prints empty line
     println!("\n");
 }

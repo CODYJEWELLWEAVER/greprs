@@ -31,18 +31,24 @@ pub const ERR_MSG_APP_ERR: &'static str = "Application error:";
 pub const ERR_MSG_STD_ERR_WRITE: &'static str = "Could not write to std err!";
 pub const ERR_MSG_NO_SEARCH_CFG: &'static str = "No search configuration! Exiting...";
 pub const ERR_MSG_NO_OPEN_FILES: &'static str = "Could not open any files!";
+pub const ERR_MSG_NO_VALID_PATTERNS: &'static str = "No valid patterns could be generated...";
 
 /**
 * HELP OUTPUT STRING - Output of '$greprs help'
 */
 pub const HELP_INFORMATION_OUTPUT: &'static str
-= "Welcome to greprs:
-*******************************************************************************
-* Usage: 
-*   Basic: $greprs <query> <path/to/file>
+= "\x1b[1;38;5;2mWelcome to greprs:
+\x1b[38;5;16m*******************************************************************************
+* \x1b[38;5;2mUsage:
+\x1b[38;5;16m*   Basic: \x1b[38;5;1m$\x1b[38;5;16mgreprs \x1b[38;5;12m<query> <path/to/file>
 *   Basic w/ options: $greprs <query> [<path/to/file>,...] [<option>,...]
 *   Alt: $greprs [q:<query>,...] [<path/to/file>,...]
 *   Alt w/ options: $greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
+* Options:
+*   Ignore Case: -i or --ignore-case
+*   Invert Match: -v or --invert-match
+*   Word Match: -w or --word-match
+*   Count Output: -c or --count
 *******************************************************************************
 * Help:
 *   Documentation: $greprs help or $greprs --help

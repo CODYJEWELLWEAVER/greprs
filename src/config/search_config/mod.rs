@@ -27,11 +27,11 @@ pub struct SearchConfig<'a> {
 impl SearchConfig<'_> {
     /** SearchConfig Constructor */
     pub fn new<'a>(
-        search_args: SearchArgs<'a>, 
-        options: Vec<OptionType>
+        search_args: SearchArgs<'a>
     ) -> Result<SearchConfig<'a>, &'static str> {
         let queries = search_args.queries;
         let files = search_args.files;
+        let options = search_args.options;
 
         let case_sensitive: bool 
         = if options.contains(&OptionType::CaseInsensitive) {

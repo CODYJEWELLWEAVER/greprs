@@ -2,3 +2,4 @@
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qgreprs v0.1.0\nRust\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qgreprs\nRust GPLv3 License\\E$"}
 {"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qgreprs v0.2.0\nRust GPLv3 License\\E$"}
+{"rule":"UPPERCASE_SENTENCE_START","sentence":"^\\Qgreprs v0.3.0\nRust GPLv3 License\\E$"}

@@ -21,6 +21,7 @@ Wraps search arguments.
 pub struct SearchArgs<'a> {
     pub files: Vec<&'a str>,
     pub queries: Vec<&'a str>,
+    pub options: Vec<OptionType>
 }
 
 /**
@@ -42,6 +43,20 @@ Defines configurations for info::run()
 pub enum InfoConfig {
     Help,
     Version,
+}
+
+impl SearchArgs<'_> {
+    pub fn new<'a>(
+        queries: Vec<&'a str>,
+        files: Vec<&'a str>,
+        options: Vec<OptionType>
+    ) -> SearchArgs<'a> {
+        SearchArgs {
+            queries,
+            files,
+            options
+        }
+    }
 }
 
 impl Config<'_> {
@@ -91,11 +106,12 @@ impl Config<'_> {
         }
         
         // Parses arguments for search parameters: (query, content) 
-        let search_args = parse::parse_search_args(&args)?;
+        // let search_args = parse::parse_search_args(&args)?;
         // Parses arguments for program options
-        let option_args = parse::parse_option_args(&args)?;
+        // let option_args = parse::parse_option_args(&args)?;
+        let search_args: SearchArgs = parse::parse_arguments(args)?;
 
-        let search_config: SearchConfig = SearchConfig::new(search_args, option_args)?;
+        let search_config: SearchConfig = SearchConfig::new(search_args)?;
 
         Ok( 
             Config { 

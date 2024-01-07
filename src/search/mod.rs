@@ -25,18 +25,19 @@ pub fn run<'a>(
 
     let match_pattern = matcher::MatchPattern::new(search_config)?;
 
-    for file in open_files {
+    open_files.iter().for_each(|file| {
         let mut search_results = Vec::new();
-        for line in file.contents.lines() {
+
+        file.contents.lines().for_each(|line| {
             if match_pattern.matches(line) {
                 // Moves output lines to heap to be returned
                 let boxed_line_string = Box::new(line.to_string());
                 search_results.push(boxed_line_string);
             }
-        }
-        
+        });
+
         output_content.insert(file.name.to_string(), search_results);
-    }
+    });
 
     let output_type = if search_config.count_output {
         OutputType::SearchCount
