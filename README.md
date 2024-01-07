@@ -22,15 +22,22 @@ cargo install --path <path/to/greprs>
 ##### Usage
 greprs can be run using the following syntax
 ```bash
-greprs [q:<query>,...] [<path/to/file>,...] [<option>,...]
+greprs [-q:<query>,...] [<path/to/file>,...] [<option>,...]
 ```
 You can use the following for single query searches
 ```bash
 greprs query [<path/to/file>,...] [<options>,...]
 ```
+Note that to use this syntax the query should be before all files and options.
+
+You can specify multiple queries with the following notations
+```bash
+-q:<query> -q:<query> ... or -q:<query>:<query>:...
+```
+
 ###### Usage Example
 ```bash
-greprs q:is q:Thee res/test/*
+greprs -q:is -q:Thee res/test/*
 Searching for: ["is", "Thee"]
 In: <res/test/haiku.txt> <res/test/poem.txt> 
 

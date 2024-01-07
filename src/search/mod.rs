@@ -36,13 +36,14 @@ pub fn run<'a>(
             }
         });
 
-        output_content.insert(file.name.to_string(), search_results);
+        if search_results.len() > 0 {
+            output_content.insert(file.name.to_string(), search_results);
+        }
     });
 
     let output_type = if search_config.count_output {
         OutputType::SearchCount
-    }
-    else {
+    } else {
         OutputType::Search
     };
 

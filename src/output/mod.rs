@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use crate::consts;
 use crate::SearchConfig;
 
 /**
@@ -92,15 +93,16 @@ fn print_output(
             // print match counts for each file
             println!("Matching lines in {}: {}", file_name, file_output.len());
         }
-        if files_with_ouput > 1 && file_num < files_with_ouput - 1 {
-            // print empty lines to deliniate output for 
-            // multiple file outputs
-            if file_output.len() > 1 {
-                println!();
-            }
-            file_num += 1;
+        // print empty lines to deliniate output for 
+        // multiple file outputs, EXCEPT after last file
+        if file_output.len() > 0  && file_num != files_with_ouput - 1{
+            println!();
         }
+        file_num += 1;
     });
+    if files_with_ouput == 0 {
+        println!("{}", consts::ERR_MSG_NO_MATCHES);
+    }
 }
 
 /** Print Search Configuration Details */

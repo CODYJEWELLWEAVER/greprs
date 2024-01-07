@@ -1,6 +1,6 @@
 use std::ops::{RangeBounds, Bound};
 use crate::config::SearchArgs;
-use crate::consts::{COUNT_OUTPUT_OPTION_0, WORD_MATCH_OPTION_0, WORD_MATCH_OPTION_1};
+use crate::consts::{COUNT_OUTPUT_OPTION_0, WORD_MATCH_OPTION_0, WORD_MATCH_OPTION_1, self};
 use crate::consts::COUNT_OUTPUT_OPTION_1;
 use crate::consts::{ CASE_INSENSITIVE_OPTION_0, INVERT_MATCH_OPTION_0, INVERT_MATCH_OPTION_1,
 CASE_INSENSITIVE_OPTION_1 };
@@ -15,7 +15,7 @@ mod test {
 
     #[test]
     fn parse_args() {
-        let args  = ["/greprs".to_string(), "in".to_string(), "res/test/haiku.txt".to_string(), "-i".to_string(), "q:hello".to_string(), "--count".to_string()];
+        let args  = ["/greprs".to_string(), "in".to_string(), "res/test/haiku.txt".to_string(), "-i".to_string(), "-q:hello".to_string(), "--count".to_string()];
         let search_args = parse_arguments(&args).unwrap();
         let expected_queries = vec!("in".to_string(), "hello".to_string());
         let expected_files = vec!("res/test/haiku.txt".to_string());
@@ -31,24 +31,21 @@ pub fn parse_arguments<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str
     let mut files: Vec<&str> = Vec::new();
     let mut options: Vec<OptionType> = Vec::new();
     
-    // Check first argument for an option
-    // Otherwise add it to queries
-    if !args[1].starts_with("-") {
-        // remove query indicator
-        if args[1].starts_with("q:") && args[1].len() > 2{
-            queries.push(&args[1].slice(2..));
-        } else {
-            queries.push(&args[1]);
+    // parse queries, files, and options
+    (&args[1..]).into_iter().for_each(|arg| {
+        if arg.starts_with(consts::QUERY_FLAG) && arg.len() > 2 {
+            let query_strings: Vec<& str> = arg.slice(2..).split(':').collect();
+            query_strings.iter().for_each(|query| {
+                if *query != "" {
+                    queries.push(query);
+                }
+            });
         }
-    }
-    
-    // Check for queries & files in args
-    (&args[2..]).into_iter().for_each(|arg| {
-        if !arg.starts_with('-') {
-            if arg.starts_with("q:") && arg.len() > 2 {
-                queries.push(&arg.slice(2..));
-            }
-            else {
+        else if !arg.starts_with(consts::OPTION_FLAG) {
+            if queries.is_empty() {
+                // add first non option arg to query
+                queries.push(arg);
+            } else {
                 files.push(arg);
             }
         } else {
@@ -60,10 +57,10 @@ pub fn parse_arguments<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str
     });
 
     if queries.is_empty() {
-        return Err("Could not find any queries in arguments!")
+        return Err(consts::ERR_MSG_NO_QUERIES)
     }
     if files.is_empty() {
-        return Err("Could not find any files in arguments!")
+        return Err(consts::ERR_MSG_NO_FILES)
     }
 
     Ok(

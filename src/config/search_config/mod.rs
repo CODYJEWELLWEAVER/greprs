@@ -32,35 +32,15 @@ impl SearchConfig<'_> {
         let queries = search_args.queries;
         let files = search_args.files;
         let options = search_args.options;
-
-        let case_sensitive: bool 
-        = if options.contains(&OptionType::CaseInsensitive) {
-                false
-        } else { true };
-
-        let invert_match: bool 
-        = if options.contains(&OptionType::InvertMatch) {
-            true
-        } else { false };
-
-        let count_output: bool 
-        = if options.contains(&OptionType::CountOutput) {
-            true
-        } else { false };
-
-        let word_match: bool
-        = if options.contains(&OptionType::WordMatch) {
-            true
-        } else { false };
         
         Ok(
             SearchConfig {
                 queries,
                 files,
-                case_sensitive,
-                invert_match,
-                count_output,
-                word_match
+                case_sensitive: !options.contains(&OptionType::CaseInsensitive),
+                invert_match: options.contains(&OptionType::InvertMatch),
+                count_output: options.contains(&OptionType::CountOutput),
+                word_match: options.contains(&OptionType::WordMatch)
             }
         )
     }
