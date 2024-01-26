@@ -30,6 +30,8 @@ pub fn parse_arguments<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str
     let mut queries: Vec<&str> = Vec::new();
     let mut files: Vec<&str> = Vec::new();
     let mut options: Vec<OptionType> = Vec::new();
+ 
+    let mut found_end_option: bool = false;
     
     // parse queries, files, and options
     (&args[1..]).into_iter().for_each(|arg| {
@@ -40,18 +42,24 @@ pub fn parse_arguments<'a>(args: &'a[String]) -> Result<SearchArgs, &'static str
                     queries.push(query);
                 }
             });
-        }
-        else if !arg.starts_with(consts::OPTION_FLAG) {
+        } else if arg.starts_with(consts::OPTION_FLAG) && !found_end_option {
+            // check for 
+            if arg == consts::END_OPTION_FLAG {
+                found_end_option = true;
+            } else {
+                let option_type: OptionType = match_option_type(arg);
+                // check for end option flag "--"
+                if option_type != OptionType::Unknown {
+                    options.push(option_type);
+                }
+            }
+            
+        } else {
             if queries.is_empty() {
                 // add first non option arg to query
                 queries.push(arg);
             } else {
                 files.push(arg);
-            }
-        } else {
-            let option_type: OptionType = match_option_type(arg);
-            if option_type != OptionType::Unknown {
-                options.push(option_type);
             }
         }
     });

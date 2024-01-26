@@ -7,6 +7,8 @@ pub const QUERY_FLAG: &'static str = "-q:";
 
 // OPTION FLAG
 pub const OPTION_FLAG: &'static str = "-";
+// END OPTION FLAG
+pub const END_OPTION_FLAG: &'static str = "--";
 
 // CASE SENSITIVITY OPTIONS
 pub const CASE_INSENSITIVE_OPTION_0: &'static str = "--ignore-case";
